@@ -7,9 +7,30 @@
 <meta name="description" content="Fill CDC+ provider paperwork once: Vendor / Independent Contractor packets and Direct-Hire Employee packets, ready to sign. Private: data stays on your device.">
 <meta name="theme-color" content="#14294d">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+<meta name="application-name" content="CSI Florida CDC">
+<meta name="apple-mobile-web-app-title" content="CSI Florida CDC">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+<meta name="msapplication-config" content="browserconfig.xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CSI Florida - CDC Application App">
+<meta property="og:title" content="CSI Florida - CDC Application App · CSI Florida">
+<meta property="og:description" content="Fill CDC+ provider paperwork once: Vendor / Independent Contractor packets and Direct-Hire Employee packets, ready to sign. Private: data stays on your device.">
+<meta property="og:url" content="https://csiflorida.github.io/cdc-packet-builder/">
+<meta property="og:image" content="https://csiflorida.github.io/cdc-packet-builder/icons/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://csiflorida.github.io/cdc-packet-builder/icons/social-card.png">
 <link rel="stylesheet" href="app.css">
 </head>
 <body class="home">
@@ -51,6 +72,17 @@
     </a>
   </div>
 
+
+  <div class="card install-card" id="installCard">
+    <img src="icons/icon-192.png" alt="CSI Florida logo" width="72" height="72">
+    <div class="ic-body">
+      <h3>Put the app on your desktop or phone</h3>
+      <p id="installText">Install it once and open it from a desktop or home-screen button with the CSI Florida logo — it then works even without internet.</p>
+      <div class="btnrow"><button class="pri" id="btnInstallBig">Install on this device</button></div>
+      <div class="install-help hide" id="installHelp"></div>
+    </div>
+  </div>
+
   <div class="card home-info">
     <h3>How it works</h3>
     <ol class="steps">
@@ -76,6 +108,25 @@
   let deferred = null; const ib = document.getElementById('btnInstall');
   window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; ib.classList.remove('hide'); });
   ib.onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; ib.classList.add('hide'); };
+
+  // Desktop / home-screen install
+  const help = document.getElementById('installHelp'), big = document.getElementById('btnInstallBig');
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (standalone) { document.getElementById('installText').textContent = '✓ You are using the installed app.'; big.classList.add('hide'); }
+  const ua = navigator.userAgent;
+  const howTo = () => {
+    if (/iPhone|iPad|iPod/.test(ua)) return 'On iPhone / iPad (Safari): tap the <b>Share</b> button, then <b>Add to Home Screen</b>.';
+    if (/Android/.test(ua)) return 'On Android (Chrome): open the <b>⋮</b> menu and choose <b>Install app</b> or <b>Add to Home screen</b>.';
+    if (/Edg\//.test(ua)) return 'In Microsoft Edge: open the <b>…</b> menu → <b>Apps</b> → <b>Install this site as an app</b>. It then appears on the desktop, Start menu and taskbar.';
+    if (/Chrome\//.test(ua)) return 'In Google Chrome: click the <b>install icon</b> at the right end of the address bar, or open the <b>⋮</b> menu → <b>Cast, save and share</b> → <b>Install page as app</b>. Tick “Create desktop shortcut” if asked.';
+    if (/Safari\//.test(ua) && /Macintosh/.test(ua)) return 'In Safari on Mac: open the <b>File</b> menu → <b>Add to Dock</b>.';
+    if (/Firefox\//.test(ua)) return 'Firefox cannot install apps. Open this page in Chrome, Edge or Safari to install it, or bookmark it.';
+    return 'Use your browser menu and choose <b>Install</b> or <b>Add to Home Screen</b>.';
+  };
+  big.onclick = async () => {
+    if (deferred) { deferred.prompt(); const r = await deferred.userChoice; deferred = null; if (r.outcome === 'accepted') { big.classList.add('hide'); help.classList.add('hide'); } return; }
+    help.innerHTML = howTo(); help.classList.remove('hide');
+  };
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
