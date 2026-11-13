@@ -112,3 +112,4 @@
   .tiles.three{grid-template-columns:1fr 1fr 1fr}
   @media(max-width:980px){.tiles.three{grid-template-columns:1fr}}
   .tile.t-app{border-top-color:#6a3fb0}.tile.t-app .tile-go{color:#6a3fb0}
+  .hdr-logo{border-radius:9px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25)}
