@@ -192,9 +192,10 @@
     for (let i = 0; i < 7; i++) setCheck(form, BX + `c1_1[${i}]`, i === idx);
     setText(form, BX + 'f1_03[0]', v.w9class === 'llc' ? up(d.llc_code).toUpperCase() : '');
     setText(form, BX + 'f1_04[0]', v.w9class === 'other' ? d.other_class : '');
-    setCheck(form, BX + 'c1_2[0]', !!d.foreign_partners);
-    setText(form, P + 'f1_05[0]', d.exempt_payee);
-    setText(form, P + 'f1_06[0]', d.fatca);
+    // Line 3b, exempt payee code and FATCA code are not collected: always left blank
+    setCheck(form, BX + 'c1_2[0]', false);
+    setText(form, P + 'f1_05[0]', '');
+    setText(form, P + 'f1_06[0]', '');
     setText(form, P + 'Address_ReadOrder[0].f1_07[0]', v.vAddr1);
     setText(form, P + 'Address_ReadOrder[0].f1_08[0]', v.vAddr2);
     // Requester = CDC+ consumer (participant)
@@ -202,7 +203,7 @@
     req.enableMultiline();
     req.setText([v.participantWithId, v.pAddr1, v.pAddr2].filter(Boolean).join('\n'));
     req.setFontSize(8);
-    setText(form, P + 'f1_10[0]', d.w9_accounts);
+    setText(form, P + 'f1_10[0]', ''); // line 7 (account numbers) left blank
     const n = digits(d.tin);
     if (d.tin_type === 'EIN') {
       setText(form, P + 'f1_14[0]', n.slice(0, 2)); setText(form, P + 'f1_15[0]', n.slice(2, 9));

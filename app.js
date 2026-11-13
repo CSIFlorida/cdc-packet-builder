@@ -1,5 +1,5 @@
 (function(){
-const KEY='cdcPacketRecords.v1', VERSION='1.0.3';
+const KEY='cdcPacketRecords.v1', VERSION='1.0.4';
 document.getElementById('ver').textContent=VERSION;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const form=$('#f');
@@ -33,7 +33,7 @@ function writeForm(d){
     const v=d[el.name];
     if(el.type==='radio')el.checked=(v===el.value);
     else if(el.type==='checkbox')el.checked=!!v;
-    else el.value=v==null?'':v;
+    else{el.value=v==null?'':v; if(el.tagName==='SELECT'&&el.selectedIndex<0)el.selectedIndex=0;}
   });
   refresh();
 }
@@ -169,7 +169,7 @@ const MAP=[
  ['Email','Email','—','—','Email Address of Individual/Business'],
  ['Tax ID (SSN or EIN)','Tax ID/FEIN','Part I – SSN or EIN boxes','—','—'],
  ['Provider type / entity','Q1 checkboxes','Line 3a classification (auto)','Title (default “Independent Contractor”)','“for” checkbox (IC / Vendor)'],
- ['W-9 details (LLC code, exemptions, 3b, line 7)','—','Lines 3a, 3b, 4, 7','—','—'],
+ ['W-9 tax classification (and LLC code)','—','Line 3a (lines 3b, 4 and 7 left blank)','—','—'],
  ['Vendor questions 2–7','Q2–Q7, Medicaid # / DOH #, circled Medicaid type','—','—','—'],
  ['Prior screening purpose / agency / date','—','—','Page 4 box','—'],
  ['Bank info','—','—','—','Account type, bank name, routing (9 boxes), account #, attachment type'],
