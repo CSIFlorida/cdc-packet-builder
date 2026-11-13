@@ -1,5 +1,5 @@
 /* Offline cache. Bump CACHE when you publish a new version so users get the update. */
-const CACHE = 'cdc-packet-v1.0.1';
+const CACHE = 'cdc-packet-v1.0.2';
 const FILES = ['./', './index.html', './app.css', './app.js', './fill.js', './lib/pdf-lib.min.js', './forms/templates.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });

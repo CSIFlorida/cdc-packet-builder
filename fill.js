@@ -77,7 +77,27 @@
   }
 
   function setText(form, name, val, size = 10) {
-    try { const f = form.getTextField(name); f.setText(up(val) || ''); if (size) f.setFontSize(size); } catch (e) { console.warn('field', name, e.message); }
+    try {
+      const f = form.getTextField(name), str = up(val) || '';
+      f.setText(str);
+      if (size) {
+        // shrink long entries so they fit the box instead of being cut off
+        const w = f.acroField.getWidgets()[0].getRectangle().width - 4;
+        const H = PDFLib_ref.StandardFontEmbedder.for(PDFLib_ref.StandardFonts.Helvetica);
+        let sz = size;
+        if (!f.isCombed() && str) while (sz > 6 && H.widthOfTextAtSize(str, sz) > w) sz -= 0.25;
+        f.setFontSize(sz);
+      }
+    } catch (e) { console.warn('field', name, e.message); }
+  }
+  // Move a text box's bottom edge up so its text is drawn clear of the line below
+  function liftField(form, name, dy) {
+    try {
+      form.getTextField(name).acroField.getWidgets().forEach(w => {
+        const r = w.getRectangle();
+        w.setRectangle({ x: r.x, y: r.y + dy, width: r.width, height: r.height - dy });
+      });
+    } catch (e) { console.warn('lift', name, e.message); }
   }
   function setCheck(form, name, on) {
     // Set /V and /AS directly so the form's own (original) check-mark appearance is kept
@@ -98,7 +118,8 @@
     const { doc, font, bold } = await prep(PDFLib, bytes);
     const pg = doc.getPage(0);
     const B = (l, t, w = 10.5, h = 11.2) => xbox(pg, bold, l, t, w, h);
-    const yb = top => 792 - top; // baseline from top coordinate
+    const LIFT = 3.5; // keeps typed text clearly above the printed underline
+    const yb = top => 792 - top + LIFT; // baseline from top coordinate
 
     text(pg, font, v.participant, 150, yb(214.5), 132, 10);
     text(pg, font, d.p_id, 412, yb(214.5), 72, 10);
@@ -128,7 +149,7 @@
     // 4. Medicaid
     if (d.medicaid === 'Yes') B(261.0, 486.8); else if (d.medicaid === 'No') B(300.0, 486.8);
     if (d.medicaid === 'Yes') {
-      const circ = (x0, x1) => pg.drawEllipse({ x: (x0 + x1) / 2, y: yb(512.5), xScale: (x1 - x0) / 2 + 4, yScale: 8, borderWidth: 0.9, borderColor: PDFLib_rgb(0, 0, 0) });
+      const circ = (x0, x1) => pg.drawEllipse({ x: (x0 + x1) / 2, y: yb(512.5) - LIFT, xScale: (x1 - x0) / 2 + 4, yScale: 8, borderWidth: 0.9, borderColor: PDFLib_rgb(0, 0, 0) });
       if (d.mcd_apd) circ(275, 332);
       if (d.mcd_general) circ(346, 382);
     }
@@ -163,6 +184,8 @@
     const form = doc.getForm();
     const P = 'topmostSubform[0].Page1[0].';
     const BX = P + 'Boxes3a-b_ReadOrder[0].';
+    [P + 'f1_01[0]', P + 'f1_02[0]', P + 'Address_ReadOrder[0].f1_07[0]', P + 'Address_ReadOrder[0].f1_08[0]', P + 'f1_10[0]',
+     BX + 'f1_04[0]'].forEach(n => liftField(form, n, 3));
     setText(form, P + 'f1_01[0]', d.v_name);
     setText(form, P + 'f1_02[0]', up(d.v_business) !== up(d.v_name) ? d.v_business : '');
     const idx = { individual: 0, ccorp: 1, scorp: 2, partnership: 3, trust: 4, llc: 5, other: 6 }[v.w9class];
@@ -230,9 +253,10 @@
     setCheck(form, 'Independent Contractor', who === 'Independent Contractor');
     setCheck(form, 'Vendor', who === 'Vendor');
     setText(form, 'EmployerParticipant Name and CDC ID Number', v.participantWithId);
-    setText(form, 'Name of IndividualBusiness requesting Direct Deposit 1', d.v_name);
-    setText(form, 'Name of IndividualBusiness requesting Direct Deposit 2', up(d.v_business) !== up(d.v_name) ? d.v_business : '');
-    text(doc.getPage(0), font, d.v_email, 312, 792 - 382.5, 214, 10);
+    // The form's field "...Direct Deposit 2" is actually the box on the Email line
+    const ddName = up(d.v_business) && up(d.v_business) !== up(d.v_name) ? `${up(d.v_name)} (${up(d.v_business)})` : up(d.v_name);
+    setText(form, 'Name of IndividualBusiness requesting Direct Deposit 1', ddName);
+    setText(form, 'Name of IndividualBusiness requesting Direct Deposit 2', d.v_email);
     setCheck(form, 'Checking', d.acct_type === 'Checking');
     setCheck(form, 'Savings', d.acct_type === 'Savings');
     setText(form, 'Bank Name', d.bank_name);
