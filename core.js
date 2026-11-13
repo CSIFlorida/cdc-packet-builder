@@ -1,13 +1,13 @@
 /* Shared engine for every packet page (records, validation display, attachments, PDF download, help, privacy). */
 window.PacketApp = function (cfg) {
   const VERSION = window.APP_VERSION;
-  const ALL_KEYS = ['cdcPacketRecords.v1', 'cdcEmpPacketRecords.v1']; // vendor/IC + employee stores
+  const ALL_KEYS = ['cdcPacketRecords.v1', 'cdcEmpPacketRecords.v1', 'cdcAppRecords.v1']; // vendor/IC, employee, application stores
   const PARTICIPANT_FIELDS = ['p_first', 'p_last', 'p_id', 'p_street', 'p_city', 'p_state', 'p_zip', 'rep_name', 'p_ein'];
   const KEY = cfg.KEY;
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const form = $('#f');
   const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-  let store = { records: [], current: null }, att = {}, touched = new Set(), showAll = false;
+  let store = { records: [], current: null }, att = {}, touched = new Set(), showAll = false, lastAp = {};
   $('#ver').textContent = VERSION;
 
   $$('.yn').forEach(el => { const n = el.dataset.name; el.innerHTML = `<label><input type="radio" name="${n}" value="Yes">Yes</label><label><input type="radio" name="${n}" value="No">No</label>`; });
@@ -86,10 +86,13 @@ window.PacketApp = function (cfg) {
     const isOpt = a => a.startsWith('only') || a.startsWith('optional');
     $('#docList').innerHTML = cfg.filler.DOCS.map(x => {
       const a = ap[x.key], cls = a.startsWith('required') ? 'b-req' : off(a) ? 'b-no' : 'b-opt';
+      const was = lastAp[x.key] || '';
       let on = first ? !(off(a) || isOpt(a)) : (prev.has(x.key) || (a.startsWith('required') && !prev.size));
-      if (a.startsWith('required') && x.key === 'chg') on = true;
+      if (a.startsWith('required') && !was.startsWith('required')) on = true;   // just became required → tick it
+      if (!a.startsWith('required') && was.startsWith('required') && isOpt(a)) on = false;
       return `<label class="doc"><input type="checkbox" value="${x.key}" ${on && !off(a) ? 'checked' : ''} ${off(a) ? 'disabled' : ''}><span class="t"><b>${x.title}</b><span class="badge ${cls}">${a}</span></span><button class="sm one" data-k="${x.key}" type="button" ${off(a) ? 'disabled' : ''}>PDF</button></label>`;
     }).join('');
+    lastAp = ap;
     $$('#docList .one').forEach(b => b.onclick = e => { e.preventDefault(); genOne(b.dataset.k); });
     const { out, bad } = cfg.issues(d, att);
     form.querySelectorAll('[name]').forEach(el => el.classList.toggle('invalid', bad.has(el.name) && (showAll || touched.has(el.name))));
@@ -113,7 +116,7 @@ window.PacketApp = function (cfg) {
     att[key] = { bytes: new Uint8Array(await f.arrayBuffer()), type: f.type || (nm.endsWith('.pdf') ? 'application/pdf' : nm.endsWith('.png') ? 'image/png' : 'image/jpeg'), name: f.name };
     $('#' + inp.id + '_n').textContent = '✓ ' + f.name; refresh();
   }
-  $('#att_bg').onchange = e => readFile(e.target, 'bg'); $('#att_check').onchange = e => readFile(e.target, 'check');
+  $$('input[type=file][data-att]').forEach(el => el.onchange = () => readFile(el, el.dataset.att));
 
   const b64 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
   const TPL = {}; for (const k in window.TEMPLATES_B64) TPL[k] = b64(window.TEMPLATES_B64[k]);
@@ -189,7 +192,7 @@ window.PacketApp = function (cfg) {
     if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Tap again to erase everything'; setTimeout(() => { delete b.dataset.arm; b.textContent = 'Erase all data on this device'; }, 4000); return; }
     try { ALL_KEYS.forEach(k => localStorage.removeItem(k)); } catch (e) {}
     store = { records: [], current: null }; att = {};
-    ['att_bg', 'att_check'].forEach(id => { $('#' + id).value = ''; $('#' + id + '_n').textContent = ''; });
+    $$('input[type=file][data-att]').forEach(el => { el.value = ''; $('#' + el.id + '_n').textContent = ''; });
     delete b.dataset.arm; b.textContent = 'Erase all data on this device'; newRecord(); renderPicker(); toast('All saved data (both packets) erased from this device');
   };
   let deferred = null;

@@ -22,9 +22,17 @@
 </header>
 
 <main class="home-wrap">
-  <h2 class="home-q">Which packet do you need?</h2>
-  <div class="tiles">
-    <a class="tile" href="employee.html">
+  <h2 class="home-q">What would you like to complete?</h2>
+  <div class="tiles three">
+    <a class="tile t-app" href="application.html">
+      <span class="tile-ico" aria-hidden="true">📝</span>
+      <span class="tile-t">CDC+ Participant Application</span>
+      <span class="tile-d">For a consumer applying to join CDC+. Completes the Application Packet and the Enrollment Packet.</span>
+      <span class="tile-f">Application · Participant/Consultant Agreement · Representative Agreement · Emergency Back-up Plan · Training Affirmation · F/EA Consent · IRS 2678 · IRS 8821 · Program Consent · Direct Deposit</span>
+      <span class="tile-go">Start application →</span>
+      <span class="tile-n" id="nApp"></span>
+    </a>
+    <a class="tile t-emp" href="employee.html">
       <span class="tile-ico" aria-hidden="true">👤</span>
       <span class="tile-t">Direct-Hire Employee Packet</span>
       <span class="tile-d">For a person the participant hires and pays as an employee, including Emergency Back Ups.</span>
@@ -45,7 +53,7 @@
   <div class="card home-info">
     <h3>How it works</h3>
     <ol class="steps">
-      <li>Choose a packet and answer the questions. Details you enter for a participant can be reused in both packets.</li>
+      <li>Choose what to complete and answer the questions. A participant's details entered once can be reused in the other packets.</li>
       <li>Attach the Level 2 background screening letter and a pre-printed voided check, if you have them.</li>
       <li>Download the complete packet as one PDF in APD's order, print, sign, and send it to your CDC+ consultant with the updated Purchasing Plan or Quick Update.</li>
     </ol>
@@ -60,6 +68,8 @@
   document.getElementById('ver').textContent = window.APP_VERSION;
   const count = k => { try { return ((JSON.parse(localStorage.getItem(k)) || {}).records || []).filter(r => r.data && (r.data.e_first || r.data.e_last || r.data.v_name)).length; } catch (e) { return 0; } };
   const nE = count('cdcEmpPacketRecords.v1'), nV = count('cdcPacketRecords.v1');
+  const nA = (()=>{ try { return ((JSON.parse(localStorage.getItem('cdcAppRecords.v1')) || {}).records || []).filter(r => r.data && (r.data.p_first || r.data.p_last)).length; } catch (e) { return 0; } })();
+  if (nA) document.getElementById('nApp').textContent = nA + ' saved application' + (nA > 1 ? 's' : '');
   if (nE) document.getElementById('nEmp').textContent = nE + ' saved employee' + (nE > 1 ? 's' : '');
   if (nV) document.getElementById('nVen').textContent = nV + ' saved provider' + (nV > 1 ? 's' : '');
   let deferred = null; const ib = document.getElementById('btnInstall');

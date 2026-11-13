@@ -20,6 +20,7 @@
   </div>
   <div class="hdr-btns">
     <a class="btn sm ghost" href="index.html">⌂ Home</a>
+    <a class="btn sm ghost" href="application.html">Application</a>
     <a class="btn sm ghost" href="employee.html">Employee packet →</a>
     <button class="sm ghost hide" id="btnInstall">Install app</button>
     <button class="sm ghost" id="showMap">Field map</button>
@@ -174,8 +175,8 @@
         <div class="c2"><label>Vendor Form date *</label><input type="date" name="form_date" required></div>
         <div class="c2"><label>Signature date</label><input type="date" name="sign_date"></div>
         <div class="c2" style="align-self:end"><label class="chk"><input type="checkbox" name="fill_sign_date">Print signature dates on forms</label></div>
-        <div class="c3"><label>Background Screening Clearance Letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_bg" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_bg_n"></div></div>
-        <div class="c3"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
+        <div class="c3"><label>Background Screening Clearance Letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_bg" data-att="bg" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_bg_n"></div></div>
+        <div class="c3"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" data-att="check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
       </div>
       <div class="note">Attachments are placed into the combined packet in APD's order. They are used for this session only and are not saved with the record.</div>
     </section>
@@ -221,7 +222,8 @@
 </div></div>
 
 <script src="lib/pdf-lib.min.js"></script>
-<script src="forms/templates.js"></script>
+<script src="forms/tpl-common.js"></script>
+<script src="forms/tpl-vendor.js"></script>
 <script src="fill.js"></script>
 <script src="version.js"></script>
 <script src="core.js"></script>

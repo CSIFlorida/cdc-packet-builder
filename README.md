@@ -1,6 +1,14 @@
 # CDC+ Packet Builder
 
-A free web app that lets CDC+ participants and representatives complete provider paperwork by answering one questionnaire. The home screen has a button for each packet:
+A free web app that lets CDC+ participants and representatives complete CDC+ paperwork by answering one questionnaire. The home screen has a button for each packet:
+
+**CDC+ Participant Application** (`application.html`), for a consumer applying to the program:
+1. Application Packet: CDC+ Application, Participant/Consultant Agreement, Representative Agreement (only with a CDC+ Representative), Emergency Back-up Plan
+2. New Participant Training Affirmation, plus the Review Answer Sheet as an uploaded attachment
+3. Enrollment Packet: Informed Consent for the F/EA, IRS Form 2678, IRS Form 8821 (followed by any proof of signing authority you upload), CDC+ Program Consent Form
+4. Direct Deposit Request (Cons/Rep), only for reimbursement by direct deposit, plus the voided check as an uploaded attachment
+
+The consultant-interview pages of the Application Packet are intentionally left out, because they are not submitted to CDC+.
 
 **Direct-Hire Employee Packet** (`employee.html`), in APD's order:
 1. Employee Information Form (eff. 12/2/2014)
@@ -59,6 +67,9 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 | `index.html` | Home screen with a button for each packet |
 | `employee.html`, `employee.js` | Direct-Hire Employee questionnaire and its checks |
 | `vendor.html`, `vendor.js` | Vendor / IC questionnaire and its checks |
+| `application.html`, `application.js` | Participant Application questionnaire and its checks |
+| `fill-application.js` | Application & Enrollment packet field mapping (text placed by position on the flat IRS and scanned APD pages) |
+| `forms/tpl-*.js` | Blank forms embedded per packet, so each page loads only its own forms |
 | `core.js` | Shared engine: saved records, attachments, downloads, privacy |
 | `app.css` | Look of all pages |
 | `fill.js` | Vendor packet field mapping, plus the shared Good Moral and Direct Deposit fillers |
@@ -66,9 +77,8 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 | `version.js` | App version number |
 | `lib/pdf-lib.min.js` | PDF library (pdf-lib 1.17.1, MIT license) |
 | `forms/originals/*.pdf` | The blank forms |
-| `forms/templates.js` | The same blank forms, embedded for offline use |
 | `manifest.webmanifest`, `sw.js`, `icons/` | Install and offline support |
-| `tools/build-templates.py` | Rebuilds `forms/templates.js` after a form is replaced |
+| `tools/build-templates.py` | Rebuilds the `forms/tpl-*.js` bundles after a form is replaced |
 
 ## Updating
 

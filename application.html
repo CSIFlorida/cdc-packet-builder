@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Participant Application · CDC+ Packet Builder</title>
+<meta name="description" content="Apply to CDC+: fill the Application Packet and Enrollment Packet once — Application, Emergency Back-up Plan, Representative Agreement, IRS 2678 and 8821, Program Consent, F/EA Informed Consent. Private: data stays on your device.">
+<meta name="theme-color" content="#14294d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="apl">
+<header>
+  <img src="icons/icon-192.png" alt="" width="38" height="38" style="border-radius:8px">
+  <div>
+    <h1>CDC+ Participant Application</h1>
+    <div class="sub">Answer once → Application Packet + Enrollment Packet filled in, in order, ready for signatures.</div>
+  </div>
+  <div class="hdr-btns">
+    <a class="btn sm ghost" href="index.html">⌂ Home</a>
+    <a class="btn sm ghost" href="employee.html">Employee packet</a>
+    <a class="btn sm ghost" href="vendor.html">Vendor / IC packet</a>
+    <button class="sm ghost hide" id="btnInstall">Install app</button>
+    <button class="sm ghost" id="showMap">Field map</button>
+    <button class="sm ghost" id="btnHelp">Help &amp; privacy</button>
+  </div>
+  <div class="progress" title="Required information completed"><div id="progBar"></div><span id="progTxt">0%</span></div>
+</header>
+
+<div class="wrap">
+  <aside class="side">
+    <div class="card">
+      <h2>Saved applications</h2>
+      <p class="hint">Stored only in this browser on this computer.</p>
+      <div id="recList"></div>
+      <div class="btnrow">
+        <button class="sm pri" id="btnNew">+ New</button>
+        <button class="sm" id="btnDup" title="Copy the participant's details into a new application">Duplicate</button>
+        <button class="sm" id="btnDel">Delete</button>
+      </div>
+      <div class="btnrow">
+        <button class="sm" id="btnExport">Export backup</button>
+        <button class="sm" type="button" onclick="document.getElementById('imp').click()">Import</button>
+        <input type="file" id="imp" accept=".json" class="hide">
+      </div>
+      <div class="btnrow"><button class="sm danger" id="btnWipe">Erase all data on this device</button></div>
+    </div>
+    <div class="card">
+      <h2>Before you start</h2>
+      <ul class="checklist">
+        <li>Fully enrolled on the APD iBudget Waiver (not pre-enrollment)</li>
+        <li>Lives in own or family home (not an APD group home)</li>
+        <li>Most recent approved <b>Support Plan</b> and <b>Cost Plan</b> (from the consultant)</li>
+        <li>CDC+ New Consumer/Representative training taken and Readiness Review passed (85%+)</li>
+        <li>CDC+ Consultant chosen</li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="f">
+    <section class="card">
+      <h2><span class="n">1</span>Participant (Application Section I)</h2>
+      <p class="hint">Legal name — no nicknames. Boxes on the Application are printed in CAPITAL letters automatically.</p>
+      <div class="grid">
+        <div class="c2"><label>First name *</label><input type="text" name="p_first"></div>
+        <div class="c1"><label>MI</label><input type="text" name="p_mi" maxlength="1"></div>
+        <div class="c3"><label>Last name *</label><input type="text" name="p_last"></div>
+        <div class="c2"><label>Social Security # *</label><input type="text" name="p_ssn" inputmode="numeric"></div>
+        <div class="c2"><label>Date of birth *</label><input type="date" name="p_dob"></div>
+        <div class="c2"><label>Medicaid ID # * <span class="forms">(10 digits, on Support Plan)</span></label><input type="text" name="p_medicaid" inputmode="numeric" data-digits="10"></div>
+        <div class="c2"><label>Gender *</label><div class="seg"><label><input type="radio" name="p_gender" value="Male">Male</label><label><input type="radio" name="p_gender" value="Female">Female</label></div></div>
+        <div class="c4"><label>Race *</label><div class="seg">
+          <label><input type="radio" name="p_race" value="White">White</label><label><input type="radio" name="p_race" value="Black">Black</label>
+          <label><input type="radio" name="p_race" value="Native">Indian or Alaskan Native</label><label><input type="radio" name="p_race" value="Asian">Asian</label>
+          <label><input type="radio" name="p_race" value="Hispanic">Latin/Hispanic</label><label><input type="radio" name="p_race" value="Other">Other</label></div></div>
+        <div class="c2 raceother"><label>Other race</label><input type="text" name="p_race_other"></div>
+        <div class="c6"><label>Mailing address * <span class="forms">— must be a physical street address (IRS forms do not accept a PO Box)</span></label><input type="text" name="p_street"></div>
+        <div class="c6"><label>Address line 2</label><input type="text" name="p_street2"></div>
+        <div class="c3"><label>City *</label><input type="text" name="p_city"></div>
+        <div class="c1"><label>State</label><input type="text" name="p_state" maxlength="2" data-upper></div>
+        <div class="c2"><label>ZIP *</label><input type="text" name="p_zip"></div>
+        <div class="c2"><label>County of residence *</label><input type="text" name="p_county"></div>
+        <div class="c2"><label>Home phone *</label><input type="tel" name="p_phone"></div>
+        <div class="c2"><label>Alternate phone</label><input type="tel" name="p_phone_alt"></div>
+        <div class="c2"><label>Fax</label><input type="tel" name="p_fax"></div>
+        <div class="c4"><label>Email</label><input type="email" name="p_email"></div>
+        <div class="c3"><label>Primary language</label><input type="text" name="p_lang" placeholder="English"></div>
+        <div class="c3"><label>Written materials language, if not English</label><input type="text" name="p_lang_written"></div>
+        <div class="c3"><label>CDC+ ID # <span class="forms">— leave blank if not assigned yet</span></label><input type="text" name="p_id"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">2</span>Legal status &amp; who signs (Section II)</h2>
+      <div class="seg col">
+        <label><input type="radio" name="legal_status" value="competent">Competent adult – no legal guardian (the participant signs)</label>
+        <label><input type="radio" name="legal_status" value="minor_parent">Minor – parents are the guardian</label>
+        <label><input type="radio" name="legal_status" value="minor_guardian">Minor – other legal guardian</label>
+        <label><input type="radio" name="legal_status" value="adult_legal_rep">Adult – court-appointed legal representative (medical decisions and/or government benefits)</label>
+      </div>
+      <div class="competentonly" style="margin-top:10px"><label class="chk"><input type="checkbox" name="sign_mark">The participant will sign with an “X” or mark (adds the two witness lines to the IRS forms)</label></div>
+      <div class="guardianonly" style="margin-top:12px">
+        <p class="hint"><b>Parent / legal guardian / legal representative</b> — this person signs the application and enrollment forms. The CDC+ Representative cannot sign them unless they are also the guardian.</p>
+        <div class="grid">
+          <div class="c2"><label>First name *</label><input type="text" name="g_first"></div>
+          <div class="c1"><label>MI</label><input type="text" name="g_mi" maxlength="1"></div>
+          <div class="c3"><label>Last name *</label><input type="text" name="g_last"></div>
+          <div class="c6"><label>Mailing address *</label><input type="text" name="g_street"></div>
+          <div class="c3"><label>City *</label><input type="text" name="g_city"></div>
+          <div class="c1"><label>State *</label><input type="text" name="g_state" maxlength="2" data-upper></div>
+          <div class="c2"><label>ZIP *</label><input type="text" name="g_zip"></div>
+          <div class="c2"><label>Home phone *</label><input type="tel" name="g_phone"></div>
+          <div class="c2"><label>Alternate phone</label><input type="tel" name="g_phone_alt"></div>
+        </div>
+        <div class="note">The IRS requires proof of this person's authority to sign for the participant (for example a birth certificate for a parent, guardianship papers or power of attorney). Attach it in section 9 — without it, Forms 2678 and 8821 are returned.</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">3</span>CDC+ Representative (Section III)</h2>
+      <label class="chk"><input type="checkbox" name="has_rep">The participant has chosen a CDC+ Representative (unpaid advocate who manages the CDC+ account)</label>
+      <input type="hidden" name="rep_name">
+      <div class="reponly" style="margin-top:10px">
+        <div class="grid">
+          <div class="c2"><label>First name *</label><input type="text" name="r_first"></div>
+          <div class="c1"><label>MI</label><input type="text" name="r_mi" maxlength="1"></div>
+          <div class="c3"><label>Last name *</label><input type="text" name="r_last"></div>
+          <div class="c6"><label>Legal mailing address *</label><input type="text" name="r_street"></div>
+          <div class="c3"><label>City *</label><input type="text" name="r_city"></div>
+          <div class="c1"><label>State *</label><input type="text" name="r_state" maxlength="2" data-upper></div>
+          <div class="c2"><label>ZIP *</label><input type="text" name="r_zip"></div>
+          <div class="c2"><label>Home phone</label><input type="tel" name="r_phone"></div>
+          <div class="c2"><label>Cell phone</label><input type="tel" name="r_cell"></div>
+          <div class="c2"><label>Work / alternate phone</label><input type="tel" name="r_work"></div>
+          <div class="c2"><label>Fax</label><input type="tel" name="r_fax"></div>
+          <div class="c4"><label>Email *</label><input type="email" name="r_email"></div>
+          <div class="c6"><label>Relationship to participant *</label><div class="seg">
+            <label><input type="radio" name="r_rel" value="Parent">Parent</label><label><input type="radio" name="r_rel" value="Spouse">Spouse</label>
+            <label><input type="radio" name="r_rel" value="Other Relative">Other relative</label><label><input type="radio" name="r_rel" value="Friend">Friend</label></div></div>
+          <div class="c3"><label>Primary language</label><input type="text" name="r_lang" placeholder="English"></div>
+          <div class="c3"><label>Written materials language, if not English</label><input type="text" name="r_lang_written"></div>
+        </div>
+        <div class="note">The Representative must take the CDC+ training and pass the Readiness Review, and signs the Representative Agreement.</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">4</span>CDC+ Consultant (Section IV)</h2>
+      <div class="grid">
+        <div class="c2"><label>First name *</label><input type="text" name="c_first"></div>
+        <div class="c2"><label>Last name *</label><input type="text" name="c_last"></div>
+        <div class="c2"><label>Agency name * <span class="forms">(“SOLO” if solo)</span></label><input type="text" name="c_agency"></div>
+        <div class="c4"><label>Email *</label><input type="email" name="c_email"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">5</span>iBudget Cost Plan (Section V)</h2>
+      <p class="hint">Usually completed by the consultant — fill in if you have the current Support Plan and Cost Plan.</p>
+      <div class="grid">
+        <div class="c2"><label>Most recent Support Plan date</label><input type="date" name="sp_date"></div>
+        <div class="c2"><label>iBudget PIN <span class="forms">(10 digits)</span></label><input type="text" name="ibudget_pin" inputmode="numeric" data-digits="10"></div>
+        <div class="c2"></div>
+        <div class="c2"><label>Current Cost Plan from</label><input type="date" name="cp_from"></div>
+        <div class="c2"><label>to</label><input type="date" name="cp_to"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">6</span>Emergency Back-up Plan</h2>
+      <p class="hint">Required before the first Purchasing Plan can be approved. Answer in your own words.</p>
+      <label>1. What would you do if a primary provider of a critical service failed to report to work or could not do the job at the scheduled time and place? *</label>
+      <textarea name="ebu1" rows="3"></textarea>
+      <label>2. What would you do if you had a personal emergency (house fire, an accident in which you were injured, loss of a loved one)? *</label>
+      <textarea name="ebu2" rows="3"></textarea>
+      <label>3. What would you do if there were a community-wide emergency (for example, evacuation)? *</label>
+      <textarea name="ebu3" rows="3"></textarea>
+      <label>4. What would you do if an unexpected shortage of funds occurred (for example, state budget cuts)? *</label>
+      <textarea name="ebu4" rows="3"></textarea>
+      <label>5. If you have a Representative: how would you manage if they could no longer act as your Representative? (30 days to train a new one) <span class="forms">— answer “Not applicable” if there is no Representative</span></label>
+      <textarea name="ebu5" rows="3"></textarea>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">7</span>New Participant Training Affirmation</h2>
+      <div class="grid">
+        <div class="c3"><label>Who completed the training? *</label>
+          <select name="tr_who"><option value="">Automatic (Representative if any, otherwise participant/guardian)</option><option value="participant">Participant</option><option value="guardian">Parent / guardian / legal representative</option><option value="rep">CDC+ Representative</option></select></div>
+        <div class="c3"><label>Training date *</label><input type="date" name="tr_date"></div>
+        <div class="c6"><label>Consumer / participant ID number(s) <span class="forms">— separate several with commas; blank = CDC+ ID or Medicaid ID</span></label><input type="text" name="tr_ids"></div>
+      </div>
+      <div class="note">Send this form with the signed Review Answer Sheet within 30 days of the training (attach the answer sheet in section 9).</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">8</span>Enrollment Packet details</h2>
+      <div class="grid">
+        <div class="c3"><label>Best daytime phone for the IRS forms</label><input type="tel" name="irs_phone" placeholder="defaults to the signer's home phone"></div>
+        <div class="c3"><label>Representative Payee name <span class="forms">(SSI – only if any)</span></label><input type="text" name="payee_name"></div>
+      </div>
+      <div class="note">Filled the way APD's instructions require: IRS 2678 appoints APD as agent (forms 940, 941, 945 and home-care FUTA are pre-checked), EIN and trade name left blank, title “Household Employer”. IRS 8821 years are the current year plus the next two. The Consumer ID on the F/EA Informed Consent is left blank for APD.</div>
+      <label class="chk" style="margin-top:12px"><input type="checkbox" name="dd_on">Request reimbursements by <b>direct deposit</b> (Direct Deposit form for Cons/Rep)</label>
+      <div class="ddonly" style="margin-top:10px">
+        <div class="grid">
+          <div class="c3"><label>Account holder</label><select name="dd_holder"><option value="consumer">Participant (consumer)</option><option value="rep">CDC+ Representative</option></select></div>
+          <div class="c3"><label>Account type *</label><div class="seg"><label><input type="radio" name="acct_type" value="Checking">Checking</label><label><input type="radio" name="acct_type" value="Savings">Savings</label></div></div>
+          <div class="c6"><label>Bank name *</label><input type="text" name="bank_name"></div>
+          <div class="c3"><label>Routing number (9 digits) *</label><input type="text" name="routing" inputmode="numeric" maxlength="9" data-digits="9"></div>
+          <div class="c3"><label>Account number *</label><input type="text" name="account" inputmode="numeric"></div>
+          <div class="c6"><label>Attaching</label><div class="seg"><label><input type="radio" name="dd_attach" value="check">Voided check (name machine-printed)</label><label><input type="radio" name="dd_attach" value="letter">Signed bank letter on letterhead</label></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">9</span>Signature date &amp; attachments</h2>
+      <div class="grid">
+        <div class="c2"><label>Signature date</label><input type="date" name="sign_date"></div>
+        <div class="c4" style="align-self:end"><label class="chk"><input type="checkbox" name="fill_sign_date">Print signature dates on forms</label></div>
+        <div class="c3 guardianonly"><label>Proof of authority to sign for the participant <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_auth" data-att="authority" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_auth_n"></div></div>
+        <div class="c3"><label>Training Review Answer Sheet <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_review" data-att="review" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_review_n"></div></div>
+        <div class="c3 ddonly"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" data-att="check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
+      </div>
+      <div class="note">Attachments go into the combined packet in the right place and are used for this session only.</div>
+    </section>
+  </main>
+
+  <aside class="side">
+    <div class="card">
+      <h2>Generate documents</h2>
+      <p class="hint">Order: Application Packet (Application, Participant/Consultant Agreement, Representative Agreement, Emergency Back-up Plan) → Training Affirmation → Enrollment Packet (F/EA Consent, IRS 2678, IRS 8821, Program Consent) → Direct Deposit.</p>
+      <div id="docList"></div>
+      <div id="issues"></div>
+      <div class="btnrow">
+        <button class="pri" id="btnPacket">Download full application (1 PDF)</button>
+        <button id="btnEach">Download each form separately</button>
+      </div>
+      <div class="note"><b>Still to do by hand:</b> signatures and dates where not printed; the participant's <b>initials</b> on every item of the Program Consent Form; witness signature on the F/EA Informed Consent; consultant signatures. The consultant interview forms are not included. Give everything to the CDC+ Consultant, who submits it to the State Office.</div>
+    </div>
+  </aside>
+</div>
+
+<div class="modal hide" id="helpModal"><div class="box" style="max-width:700px">
+  <h2 style="margin:0 0 6px;font-size:18px">Applying to CDC+</h2>
+  <p>This page completes the documents a consumer sends to apply for the Consumer-Directed Care Plus program — the <b>Application Packet</b> and the <b>Enrollment Packet</b> — from one set of answers.</p>
+  <ol class="steps">
+    <li><b>Check the “Before you start” list</b> and have the latest approved Support Plan and Cost Plan at hand.</li>
+    <li><b>Answer sections 1–9.</b> The right-hand panel shows what is missing.</li>
+    <li><b>Download</b> the full application, print it, then sign, date and initial where shown. The consumer signs — or the parent / legal guardian / legal representative. A CDC+ Representative cannot sign these forms unless they are also the guardian.</li>
+    <li><b>Give the originals to the CDC+ Consultant</b> (keep copies). Allow at least three weeks; CDC+ then sends a Budget Authorization Form.</li>
+  </ol>
+  <p>The interview forms for choosing a consultant (Hiring and Working with Your Consultant, interview questions, New Consultant Evaluation) are not part of what is submitted, so they are not included.</p>
+  <h3>Your privacy</h3>
+  <p>Everything you type, including Social Security, Medicaid and bank numbers, stays <b>on this device, in this browser</b>. Nothing is uploaded; the PDFs are created on your device.</p>
+  <h3>Important</h3>
+  <p class="disclaimer">Independent helper tool, not made, endorsed or reviewed by APD, the CDC+ program or the IRS. Review every form before signing. Forms included: CDC+ Application (eff. 09/2/2014), Participant/Consultant Agreement (2015-12-10), Representative Agreement (2017-03-15), Emergency Back-up Plan (10/1/12), New Participant Training Affirmation (July 2012), Informed Consent F/EA (7/16/2015), IRS Form 2678 (Rev. 12-2024), IRS Form 8821 (Rev. 01-2021), CDC+ Program Consent Form (17-01-25), Direct Deposit Request (05/05/2016). Use newer versions if your consultant provides them.</p>
+  <div style="text-align:right;margin-top:12px"><button class="pri" id="helpOk">Get started</button></div>
+</div></div>
+<footer>CDC+ Packet Builder v<span id="ver"></span> · Independent tool, not affiliated with APD or the IRS · Your data never leaves this device.</footer>
+<div class="toast" id="toast"></div>
+<div class="modal hide" id="mapModal"><div class="box">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px">Master field → form field map</h2><button class="sm" onclick="document.getElementById('mapModal').classList.add('hide')">Close</button></div>
+  <div id="mapTable" style="margin-top:10px"></div>
+</div></div>
+
+<script src="lib/pdf-lib.min.js"></script>
+<script src="forms/tpl-common.js"></script>
+<script src="forms/tpl-application.js"></script>
+<script src="fill.js"></script>
+<script src="fill-application.js"></script>
+<script src="version.js"></script>
+<script src="core.js"></script>
+<script src="application.js"></script>
+</body>
+</html>

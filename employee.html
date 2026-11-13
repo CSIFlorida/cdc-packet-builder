@@ -20,6 +20,7 @@
   </div>
   <div class="hdr-btns">
     <a class="btn sm ghost" href="index.html">⌂ Home</a>
+    <a class="btn sm ghost" href="application.html">Application</a>
     <a class="btn sm ghost" href="vendor.html">Vendor / IC packet →</a>
     <button class="sm ghost hide" id="btnInstall">Install app</button>
     <button class="sm ghost" id="showMap">Field map</button>
@@ -239,8 +240,8 @@
         <div class="c2"><label>First day of employment * <span class="forms">— W-4 &amp; I-9</span></label><input type="date" name="start_date"></div>
         <div class="c2"><label>Signature date</label><input type="date" name="sign_date"></div>
         <div class="c6"><label class="chk"><input type="checkbox" name="fill_sign_date">Print signature dates on forms</label></div>
-        <div class="c3"><label>Level 2 Background Screening Clearance Letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_bg" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_bg_n"></div></div>
-        <div class="c3"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
+        <div class="c3"><label>Level 2 Background Screening Clearance Letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_bg" data-att="bg" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_bg_n"></div></div>
+        <div class="c3"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" data-att="check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
       </div>
       <div class="note">Attachments go into the combined packet in APD's order and are used for this session only.</div>
     </section>
@@ -285,7 +286,8 @@
 </div></div>
 
 <script src="lib/pdf-lib.min.js"></script>
-<script src="forms/templates.js"></script>
+<script src="forms/tpl-common.js"></script>
+<script src="forms/tpl-employee.js"></script>
 <script src="fill.js"></script>
 <script src="fill-employee.js"></script>
 <script src="version.js"></script>
