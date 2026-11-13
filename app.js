@@ -1,5 +1,5 @@
 (function(){
-const KEY='cdcPacketRecords.v1', VERSION='1.0.2';
+const KEY='cdcPacketRecords.v1', VERSION='1.0.3';
 document.getElementById('ver').textContent=VERSION;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const form=$('#f');
