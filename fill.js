@@ -225,6 +225,11 @@
     const v = derive(d);
     const { doc, font } = await prep(PDFLib, bytes);
     const form = doc.getForm();
+    // Put each value on the same line as its printed label (to the right of it), not squeezed under it
+    const place = (name, x, top, bottom) => { try { form.getTextField(name).acroField.getWidgets()[0].setRectangle({ x, y: 792 - bottom, width: 538 - x, height: bottom - top }); } catch (e) {} };
+    place('EmployeeContractor Name', 233, 359, 371.5);
+    place('Health Care Provider Employer Name', 290, 380.5, 394);
+    place('Address of Health Care Provider', 258, 402.5, 416);
     setText(form, 'EmployeeContractor Name', d.v_name, 9);
     setText(form, 'Health Care Provider Employer Name', v.participantWithId, 9);
     setText(form, 'Address of Health Care Provider', [v.pAddr1, v.pAddr2].filter(Boolean).join(', '), 9);
@@ -333,6 +338,6 @@
     return out;
   }
 
-  const api = { DOCS, derive, applicability, buildOne, buildPacket, fmtDate };
+  const api = { DOCS, derive, applicability, buildOne, buildPacket, fmtDate, embedAttachment };
   if (typeof module !== 'undefined') module.exports = api; else root.PacketFill = api;
 })(this);

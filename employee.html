@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direct-Hire Employee Packet · CDC+ Packet Builder</title>
+<meta name="description" content="Fill the CDC+ Direct-Hire Employee packet once: Employee Information Form, W-4, I-9, Good Moral Character, Direct Deposit and Change of Name/Address. Private: data stays on your device.">
+<meta name="theme-color" content="#14294d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="emp">
+<header>
+  <img src="icons/icon-192.png" alt="" width="38" height="38" style="border-radius:8px">
+  <div>
+    <h1>Direct-Hire Employee Packet</h1>
+    <div class="sub">Answer once → Employee Information Form, W-4, I-9, Good Moral Character and Direct Deposit, filled in and ready to sign.</div>
+  </div>
+  <div class="hdr-btns">
+    <a class="btn sm ghost" href="index.html">⌂ Home</a>
+    <a class="btn sm ghost" href="vendor.html">Vendor / IC packet →</a>
+    <button class="sm ghost hide" id="btnInstall">Install app</button>
+    <button class="sm ghost" id="showMap">Field map</button>
+    <button class="sm ghost" id="btnHelp">Help &amp; privacy</button>
+  </div>
+  <div class="progress" title="Required information completed"><div id="progBar"></div><span id="progTxt">0%</span></div>
+</header>
+
+<div class="wrap">
+  <aside class="side">
+    <div class="card">
+      <h2>Saved employees</h2>
+      <p class="hint">Stored only in this browser on this computer.</p>
+      <div id="recList"></div>
+      <div class="btnrow">
+        <button class="sm pri" id="btnNew">+ New</button>
+        <button class="sm" id="btnDup" title="Same participant, new employee">Duplicate</button>
+        <button class="sm" id="btnDel">Delete</button>
+      </div>
+      <div class="btnrow">
+        <button class="sm" id="btnExport">Export backup</button>
+        <button class="sm" type="button" onclick="document.getElementById('imp').click()">Import</button>
+        <input type="file" id="imp" accept=".json" class="hide">
+      </div>
+      <div class="btnrow"><button class="sm danger" id="btnWipe">Erase all data on this device</button></div>
+    </div>
+  </aside>
+
+  <main id="f">
+    <section class="card">
+      <h2><span class="n">1</span>CDC+ Participant (the employer)</h2>
+      <div class="pick hide"><select id="pPick"></select></div>
+      <p class="hint">Goes on every form: Employee Information Form, W-4 “Employer” box, I-9 Section 2 and bottom margin, Good Moral “Employer”, Direct Deposit.</p>
+      <div class="grid">
+        <div class="c2"><label>First name *</label><input type="text" name="p_first"></div>
+        <div class="c2"><label>Last name *</label><input type="text" name="p_last"></div>
+        <div class="c2"><label>CDC+ ID # *</label><input type="text" name="p_id"></div>
+        <div class="c6"><label>Street address *</label><input type="text" name="p_street"></div>
+        <div class="c3"><label>City *</label><input type="text" name="p_city"></div>
+        <div class="c1"><label>State *</label><input type="text" name="p_state" maxlength="2" data-upper></div>
+        <div class="c2"><label>ZIP *</label><input type="text" name="p_zip"></div>
+        <div class="c4"><label>CDC+ Representative name <span class="forms">— only if a representative signs for the participant</span></label><input type="text" name="rep_name" placeholder="e.g. Rebecca Representative"></div>
+        <div class="c2"><label>Employer EIN <span class="forms">— W-4, if any</span></label><input type="text" name="p_ein"></div>
+      </div>
+      <div class="note">If a representative is entered, the I-9 employer lines read “<i>Representative</i> for <i>Participant</i> – Household Employer”, as APD requires.</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">2</span>Employee</h2>
+      <p class="hint">Write the name exactly as it appears on the employee's Social Security card.</p>
+      <div class="grid">
+        <div class="c2"><label>First name *</label><input type="text" name="e_first"></div>
+        <div class="c1"><label>Middle</label><input type="text" name="e_middle"></div>
+        <div class="c3"><label>Last name *</label><input type="text" name="e_last"></div>
+        <div class="c3"><label>Other last names used <span class="forms">— I-9, if any</span></label><input type="text" name="e_other_last"></div>
+        <div class="c3"></div>
+        <div class="c4"><label>Street address *</label><input type="text" name="e_street"></div>
+        <div class="c2"><label>Apt. #</label><input type="text" name="e_apt"></div>
+        <div class="c3"><label>City *</label><input type="text" name="e_city"></div>
+        <div class="c1"><label>State *</label><input type="text" name="e_state" maxlength="2" data-upper></div>
+        <div class="c2"><label>ZIP *</label><input type="text" name="e_zip"></div>
+        <div class="c2"><label>Phone *</label><input type="tel" name="e_phone"></div>
+        <div class="c4"><label>Email *</label><input type="email" name="e_email"></div>
+        <div class="c2"><label>Date of birth *</label><input type="date" name="e_dob"></div>
+        <div class="c2"><label>Social Security # *</label><input type="text" name="e_ssn" inputmode="numeric"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">3</span>Who can we contact if the employee's mail is returned?</h2>
+      <div class="grid">
+        <div class="c2"><label>First name *</label><input type="text" name="c_first"></div>
+        <div class="c2"><label>Last name *</label><input type="text" name="c_last"></div>
+        <div class="c2"><label>Relationship *</label><input type="text" name="c_rel" placeholder="e.g. Mother"></div>
+        <div class="c2"><label>Phone *</label><input type="tel" name="c_phone"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">4</span>Employee Information Form questions</h2>
+      <p class="hint">These answers decide which employment taxes apply.</p>
+      <label>Employee's relationship to the participant (taxes) — this employee is: *</label>
+      <div class="seg col">
+        <label><input type="radio" name="tax_rel" value="parent">The participant's parent or step-parent</label>
+        <label><input type="radio" name="tax_rel" value="child21">The participant's child or step-child, and under age 21</label>
+        <label><input type="radio" name="tax_rel" value="spouse">The participant's spouse</label>
+        <label><input type="radio" name="tax_rel" value="u18school">Under 18 and still in high school (not the participant's child or step-child)</label>
+        <label><input type="radio" name="tax_rel" value="none">None of the above</label>
+      </div>
+      <div class="q" style="margin-top:8px"><div class="qt">Relationship to CDC+ participant (program reporting) *</div>
+        <select name="relationship" style="width:auto"><option value=""></option><option>None</option><option>Parent</option><option>Spouse</option><option>Child</option><option>Sibling</option><option>Grandparent</option><option>Grandchild</option></select></div>
+      <div class="q"><div class="qt">Based on Dept. of Labor guidelines, can the employee claim live-in status?</div><div class="seg yn" data-name="live_in"></div></div>
+      <div class="q"><div class="qt">1. Employee is a Medicaid-enrolled provider</div><div class="seg yn" data-name="medicaid"></div></div>
+      <div class="q"><div class="qt">2. Employee has a current professional license from FL Dept. of Health</div><div class="seg yn" data-name="doh_license"></div></div>
+      <div class="q"><div class="qt">3. Employee has been unemployed for 90 days or more</div><div class="seg yn" data-name="unemployed90"></div></div>
+      <div class="q"><div class="qt">4. Employee signed an affidavit of compliance with s. 402.3057, F.S.</div><div class="seg yn" data-name="statute"></div></div>
+      <div class="note" id="bgNote">A Level 2 background screening clearance letter must be attached if the answers are “No” to 1 and 2, or “Yes” to 3.</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">5</span>IRS Form W-4</h2>
+      <p class="hint">Step 1(c) is required. Steps 2–4 only if they apply. Leave amounts blank if not used.</p>
+      <div class="grid">
+        <div class="c6"><label>Filing status (Step 1c) *</label>
+          <div class="seg">
+            <label><input type="radio" name="w4_filing" value="single">Single or Married filing separately</label>
+            <label><input type="radio" name="w4_filing" value="mfj">Married filing jointly / Qualifying surviving spouse</label>
+            <label><input type="radio" name="w4_filing" value="hoh">Head of household</label>
+          </div></div>
+        <div class="c6"><label class="chk"><input type="checkbox" name="w4_2c">Step 2(c): only two jobs total (check box)</label></div>
+        <div class="c2"><label>3(a) Qualifying children × $2,200</label><input type="text" name="w4_3a" inputmode="decimal" placeholder="$"></div>
+        <div class="c2"><label>3(b) Other dependents × $500</label><input type="text" name="w4_3b" inputmode="decimal" placeholder="$"></div>
+        <div class="c2"><label>Step 3 total <span class="forms">(automatic)</span></label><input type="text" id="w4_3tot" disabled></div>
+        <div class="c2"><label>4(a) Other income</label><input type="text" name="w4_4a" inputmode="decimal" placeholder="$"></div>
+        <div class="c2"><label>4(b) Deductions</label><input type="text" name="w4_4b" inputmode="decimal" placeholder="$"></div>
+        <div class="c2"><label>4(c) Extra withholding per pay period</label><input type="text" name="w4_4c" inputmode="decimal" placeholder="$"></div>
+        <div class="c6"><label class="chk"><input type="checkbox" name="w4_exempt">Employee claims exemption from withholding (“EXEMPT” is also written below box 4(c), as APD requires)</label></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">6</span>Form I-9</h2>
+      <p class="hint">Section 1 is the employee's; Section 2 is completed by the participant or representative after examining the original documents.</p>
+      <label>Citizenship / immigration status (Section 1) *</label>
+      <div class="seg col">
+        <label><input type="radio" name="i9_status" value="1">1. A citizen of the United States</label>
+        <label><input type="radio" name="i9_status" value="2">2. A noncitizen national of the United States</label>
+        <label><input type="radio" name="i9_status" value="3">3. A lawful permanent resident</label>
+        <label><input type="radio" name="i9_status" value="4">4. A noncitizen authorized to work</label>
+      </div>
+      <div class="grid st3" style="margin-top:10px"><div class="c3"><label>USCIS or A-Number *</label><input type="text" name="i9_anum"></div></div>
+      <div class="grid st4" style="margin-top:10px">
+        <div class="c2"><label>Authorized to work until</label><input type="date" name="i9_auth_exp"></div>
+        <div class="c4"><span class="file">Enter ONE of the following:</span></div>
+        <div class="c2"><label>USCIS A-Number</label><input type="text" name="i9_anum4"></div>
+        <div class="c2"><label>Form I-94 Admission #</label><input type="text" name="i9_i94"></div>
+        <div class="c2"><label>Foreign passport # and country</label><input type="text" name="i9_passport"></div>
+      </div>
+      <label style="margin-top:14px">Documents examined (Section 2) *</label>
+      <div class="seg">
+        <label><input type="radio" name="i9_docs" value="A">One document from List A</label>
+        <label><input type="radio" name="i9_docs" value="BC">One from List B + one from List C</label>
+      </div>
+      <div class="grid docA" style="margin-top:10px">
+        <div class="c6"><b class="file">List A document</b></div>
+        <div class="c3"><label>Document title *</label><input type="text" name="la_title" list="listA"></div>
+        <div class="c3"><label>Issuing authority *</label><input type="text" name="la_auth"></div>
+        <div class="c3"><label>Document number *</label><input type="text" name="la_no"></div>
+        <div class="c3"><label>Expiration date <span class="forms">(if any)</span></label><input type="date" name="la_exp"></div>
+      </div>
+      <div class="grid docBC" style="margin-top:10px">
+        <div class="c6"><b class="file">List B document (identity)</b></div>
+        <div class="c3"><label>Document title *</label><input type="text" name="lb_title" list="listB"></div>
+        <div class="c3"><label>Issuing authority *</label><input type="text" name="lb_auth"></div>
+        <div class="c3"><label>Document number *</label><input type="text" name="lb_no"></div>
+        <div class="c3"><label>Expiration date <span class="forms">(if any)</span></label><input type="date" name="lb_exp"></div>
+        <div class="c6"><b class="file">List C document (employment authorization)</b></div>
+        <div class="c3"><label>Document title *</label><input type="text" name="lc_title" list="listC"></div>
+        <div class="c3"><label>Issuing authority *</label><input type="text" name="lc_auth"></div>
+        <div class="c3"><label>Document number *</label><input type="text" name="lc_no"></div>
+        <div class="c3"><label>Expiration date <span class="forms">(if any)</span></label><input type="date" name="lc_exp"></div>
+      </div>
+      <datalist id="listA"><option>U.S. Passport</option><option>U.S. Passport Card</option><option>Permanent Resident Card (Form I-551)</option><option>Employment Authorization Document (Form I-766)</option><option>Foreign passport with Form I-94</option></datalist>
+      <datalist id="listB"><option>Driver's License</option><option>State ID Card</option><option>School ID card with photograph</option><option>Voter's registration card</option><option>U.S. Military card or draft record</option><option>Military dependent's ID card</option><option>Native American tribal document</option></datalist>
+      <datalist id="listC"><option>Social Security Card</option><option>Birth Certificate (certified copy)</option><option>Certification of report of birth (DS-1350, FS-545, FS-240)</option><option>Native American tribal document</option><option>U.S. Citizen ID Card (Form I-197)</option><option>Employment authorization document issued by DHS</option></datalist>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">7</span>Background screening &amp; Good Moral Character</h2>
+      <div class="grid">
+        <div class="c3"><label>Title on certification</label><input type="text" name="gm_title" placeholder="Employee"></div>
+        <div class="c3"><label>Signature section</label>
+          <select name="gm_disclosure"><option value="">Attest – no disqualifying offenses (page 3)</option><option value="1">Record contains disqualifying offense(s) (page 4)</option></select></div>
+        <div class="c6" style="margin-top:4px"><b style="font-size:12.5px">Prior Level 2 screening within 5 years</b> <span class="file">(optional)</span></div>
+        <div class="c3"><label>Purpose of prior screening</label><input type="text" name="prior_purpose"></div>
+        <div class="c2"><label>Screening conducted by</label>
+          <select name="prior_by"><option value=""></option><option value="AHCA">Agency for Health Care Administration</option><option value="APD">Agency for Persons with Disabilities</option><option value="DFS">Dept. of Financial Services</option><option value="DOH">Dept. of Health</option><option value="DOEA">Dept. of Elder Affairs</option><option value="DCF">Dept. of Children and Families</option></select></div>
+        <div class="c1"><label>Date</label><input type="date" name="prior_date"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">8</span>Direct Deposit (EFT)</h2>
+      <div class="grid">
+        <div class="c3"><label>Account type *</label><div class="seg"><label><input type="radio" name="acct_type" value="Checking">Checking</label><label><input type="radio" name="acct_type" value="Savings">Savings</label></div></div>
+        <div class="c3"></div>
+        <div class="c6"><label>Bank name *</label><input type="text" name="bank_name"></div>
+        <div class="c3"><label>Routing number (9 digits) *</label><input type="text" name="routing" inputmode="numeric" maxlength="9" data-digits="9"></div>
+        <div class="c3"><label>Account number *</label><input type="text" name="account" inputmode="numeric"></div>
+        <div class="c6"><label>Attaching</label><div class="seg"><label><input type="radio" name="dd_attach" value="check">Voided check (pre-printed)</label><label><input type="radio" name="dd_attach" value="letter">Bank letter / specification sheet</label></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">9</span>Name or address change <span class="forms" style="font-weight:400;font-size:12px">(only if this is a change)</span></h2>
+      <label class="chk"><input type="checkbox" name="chg_on">This packet is for an employee whose <b>name or address changed</b> — also fill the Change of Name/Address form</label>
+      <div class="chgonly" style="margin-top:10px">
+        <p class="hint">Enter the <b>old</b> information below. The <b>new</b> information is taken from section 2. With a name change, APD also needs a new W-4 and a copy of the new Social Security card.</p>
+        <div class="grid">
+          <div class="c3"><label>Old first name</label><input type="text" name="o_first" placeholder="same as now if unchanged"></div>
+          <div class="c3"><label>Old last name</label><input type="text" name="o_last" placeholder="same as now if unchanged"></div>
+          <div class="c6"><label>Old street address</label><input type="text" name="o_street"></div>
+          <div class="c3"><label>Old city</label><input type="text" name="o_city"></div>
+          <div class="c1"><label>State</label><input type="text" name="o_state" maxlength="2" data-upper></div>
+          <div class="c2"><label>ZIP</label><input type="text" name="o_zip"></div>
+          <div class="c2"><label>Old phone</label><input type="tel" name="o_phone" placeholder="if different"></div>
+          <div class="c4"><label>Old email</label><input type="email" name="o_email" placeholder="if different"></div>
+        </div>
+        <div class="q"><div class="qt">Employee is a LIVE-IN (new address is the same as the participant's)</div><div class="seg yn" data-name="chg_livein"></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">10</span>Dates &amp; attachments</h2>
+      <div class="grid">
+        <div class="c2"><label>Form date *</label><input type="date" name="form_date"></div>
+        <div class="c2"><label>First day of employment * <span class="forms">— W-4 &amp; I-9</span></label><input type="date" name="start_date"></div>
+        <div class="c2"><label>Signature date</label><input type="date" name="sign_date"></div>
+        <div class="c6"><label class="chk"><input type="checkbox" name="fill_sign_date">Print signature dates on forms</label></div>
+        <div class="c3"><label>Level 2 Background Screening Clearance Letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_bg" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_bg_n"></div></div>
+        <div class="c3"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
+      </div>
+      <div class="note">Attachments go into the combined packet in APD's order and are used for this session only.</div>
+    </section>
+  </main>
+
+  <aside class="side">
+    <div class="card">
+      <h2>Generate documents</h2>
+      <p class="hint">Packet order: Employee Information → W-4 → I-9 → Background letter → Good Moral → Direct Deposit → voided check. (A Change of Name/Address form goes first when included.)</p>
+      <div id="docList"></div>
+      <div id="issues"></div>
+      <div class="btnrow">
+        <button class="pri" id="btnPacket">Download full packet (1 PDF)</button>
+        <button id="btnEach">Download each form separately</button>
+      </div>
+      <div class="note"><b>Signatures:</b> Employee signs the Employee Information Form, W-4, I-9 Section 1, Good Moral and Direct Deposit. The participant/representative signs the Employee Information Form and I-9 Section 2. Leave I-9 Supplement B (Section 3) blank.</div>
+    </div>
+  </aside>
+</div>
+
+<div class="modal hide" id="helpModal"><div class="box" style="max-width:700px">
+  <h2 style="margin:0 0 6px;font-size:18px">Direct-Hire Employee Packet</h2>
+  <p>Use this for every employee on the Purchasing Plan, including Emergency Back Ups. Natural supports (unpaid volunteers) need only the Employee Information Form and a Level 2 clearance letter.</p>
+  <ol class="steps">
+    <li><b>Answer the questions</b> in sections 1–10. Items marked * are required; the right-hand panel lists what is missing.</li>
+    <li><b>Attach</b> the Level 2 background screening clearance letter and a pre-printed voided check (handwritten checks are not accepted).</li>
+    <li><b>Download</b> the full packet or individual forms, then <b>print, sign and date</b>.</li>
+    <li><b>I-9 Section 2</b>: the participant or representative must look at the employee's <i>original</i> documents. A representative signs as “Representative Name for Consumer Name”. The first day of employment must be a future date from the signature.</li>
+    <li>Send the packet with the updated Purchasing Plan or Quick Update to your CDC+ consultant. Keep copies.</li>
+  </ol>
+  <h3>Your privacy</h3>
+  <p>Everything you type, including Social Security and bank numbers, stays <b>on this device, in this browser</b>. Nothing is uploaded; the PDFs are created on your device. Use <i>Erase all data on this device</i> when you are done on a shared computer.</p>
+  <h3>Important</h3>
+  <p class="disclaimer">Independent helper tool, not made, endorsed or reviewed by APD, the CDC+ program, the IRS or USCIS. Review every form before signing. Forms included: Employee Information Form (eff. 12/2/2014), IRS Form W-4 (2026), Form I-9 (Edition 01/20/25, expires 05/31/2027), Certification of Good Moral Character (3/11/2016), Direct Deposit/EFT Request (05/05/2016), Change of Name/Address (11/2/2017). CDC+ rejects outdated forms — if your consultant has a newer version, use it.</p>
+  <div style="text-align:right;margin-top:12px"><button class="pri" id="helpOk">Get started</button></div>
+</div></div>
+<footer>CDC+ Packet Builder v<span id="ver"></span> · Independent tool, not affiliated with APD, the IRS or USCIS · Your data never leaves this device.</footer>
+<div class="toast" id="toast"></div>
+<div class="modal hide" id="mapModal"><div class="box">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px">Master field → form field map</h2><button class="sm" onclick="document.getElementById('mapModal').classList.add('hide')">Close</button></div>
+  <div id="mapTable" style="margin-top:10px"></div>
+</div></div>
+
+<script src="lib/pdf-lib.min.js"></script>
+<script src="forms/templates.js"></script>
+<script src="fill.js"></script>
+<script src="fill-employee.js"></script>
+<script src="version.js"></script>
+<script src="core.js"></script>
+<script src="employee.js"></script>
+</body>
+</html>

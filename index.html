@@ -3,223 +3,69 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CDC+ Vendor / IC Packet Builder</title>
-<meta name="description" content="Fill the CDC+ Vendor/Independent Contractor packet once: Vendor Information Form, W-9, Good Moral Character and Direct Deposit forms, ready to sign. Private: data stays on your device.">
+<title>CDC+ Packet Builder</title>
+<meta name="description" content="Fill CDC+ provider paperwork once: Vendor / Independent Contractor packets and Direct-Hire Employee packets, ready to sign. Private: data stays on your device.">
 <meta name="theme-color" content="#14294d">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="app.css">
 </head>
-<body>
+<body class="home">
 <header>
   <img src="icons/icon-192.png" alt="" width="38" height="38" style="border-radius:8px">
   <div>
-    <h1>CDC+ Vendor / IC Packet Builder</h1>
-    <div class="sub">Answer once → get the Vendor Information Form, IRS W-9, Good Moral Character certification and Direct Deposit form filled in and ready to sign.</div>
+    <h1>CDC+ Packet Builder</h1>
+    <div class="sub">Answer one questionnaire — get every form in the packet filled in and ready to sign.</div>
   </div>
-  <div class="hdr-btns">
-    <button class="sm ghost hide" id="btnInstall">Install app</button>
-    <button class="sm ghost" id="showMap">Field map</button>
-    <button class="sm ghost" id="btnHelp">Help &amp; privacy</button>
-  </div>
-  <div class="progress" title="Required information completed"><div id="progBar"></div><span id="progTxt">0%</span></div>
+  <div class="hdr-btns"><button class="sm ghost hide" id="btnInstall">Install app</button></div>
 </header>
 
-<div class="wrap">
-  <!-- RECORDS -->
-  <aside class="side">
-    <div class="card">
-      <h2>Saved records</h2>
-      <p class="hint">Stored only in this browser on this computer.</p>
-      <div id="recList"></div>
-      <div class="btnrow">
-        <button class="sm pri" id="btnNew">+ New</button>
-        <button class="sm" id="btnDup" title="Same participant, new provider">Duplicate</button>
-        <button class="sm" id="btnDel">Delete</button>
-      </div>
-      <div class="btnrow">
-        <button class="sm" id="btnExport">Export backup</button>
-        <label class="sm" style="margin:0"><button class="sm" type="button" onclick="document.getElementById('imp').click()">Import</button></label>
-        <input type="file" id="imp" accept=".json" class="hide">
-      </div>
-      <div class="btnrow"><button class="sm danger" id="btnWipe">Erase all data on this device</button></div>
-    </div>
-  </aside>
+<main class="home-wrap">
+  <h2 class="home-q">Which packet do you need?</h2>
+  <div class="tiles">
+    <a class="tile" href="employee.html">
+      <span class="tile-ico" aria-hidden="true">👤</span>
+      <span class="tile-t">Direct-Hire Employee Packet</span>
+      <span class="tile-d">For a person the participant hires and pays as an employee, including Emergency Back Ups.</span>
+      <span class="tile-f">Employee Information Form · IRS W-4 · Form I-9 · Good Moral Character · Direct Deposit · Change of Name/Address (if needed)</span>
+      <span class="tile-go">Start employee packet →</span>
+      <span class="tile-n" id="nEmp"></span>
+    </a>
+    <a class="tile" href="vendor.html">
+      <span class="tile-ico" aria-hidden="true">🏢</span>
+      <span class="tile-t">Vendor / Independent Contractor Packet</span>
+      <span class="tile-d">For an agency, vendor or independent contractor listed on the Purchasing Plan.</span>
+      <span class="tile-f">Vendor Information Form · IRS W-9 · Good Moral Character · Direct Deposit</span>
+      <span class="tile-go">Start vendor / IC packet →</span>
+      <span class="tile-n" id="nVen"></span>
+    </a>
+  </div>
 
-  <!-- MASTER FORM -->
-  <main id="f">
-    <section class="card">
-      <h2><span class="n">1</span>CDC+ Participant (consumer / employer)</h2>
-      <p class="hint">Goes on every form: Vendor Form header, W-9 “Requester” box + bottom margin, Good Moral “Employer”, Direct Deposit “Employer/Participant”.</p>
-      <div class="grid">
-        <div class="c2"><label>First name *</label><input type="text" name="p_first" required></div>
-        <div class="c2"><label>Last name *</label><input type="text" name="p_last" required></div>
-        <div class="c2"><label>CDC+ ID # *</label><input type="text" name="p_id" required></div>
-        <div class="c6"><label>Street address *</label><input type="text" name="p_street" required></div>
-        <div class="c3"><label>City *</label><input type="text" name="p_city" required></div>
-        <div class="c1"><label>State *</label><input type="text" name="p_state" maxlength="2" required></div>
-        <div class="c2"><label>ZIP *</label><input type="text" name="p_zip" required></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2><span class="n">2</span>Provider (vendor / independent contractor)</h2>
-      <p class="hint">The person or business being paid.</p>
-      <div class="grid">
-        <div class="c6"><label>Provider type *</label>
-          <div class="seg">
-            <label><input type="radio" name="prov_type" value="IC">Independent Contractor (IC)</label>
-            <label><input type="radio" name="prov_type" value="AV">Agency / Vendor (A/V)</label>
-          </div>
-        </div>
-        <div class="c6 avonly"><label>Agency/Vendor entity *</label>
-          <div class="seg">
-            <label><input type="radio" name="av_entity" value="corporation">Corporation</label>
-            <label><input type="radio" name="av_entity" value="llc">LLC</label>
-            <label><input type="radio" name="av_entity" value="partnership">Partnership</label>
-          </div>
-        </div>
-        <div class="c3"><label>Legal name (as on tax return) * <span class="forms">— W-9 line 1</span></label><input type="text" name="v_name" required></div>
-        <div class="c3"><label>Business / DBA name <span class="forms">— only if different</span></label><input type="text" name="v_business"></div>
-        <div class="c6"><label>Street address *</label><input type="text" name="v_street" required></div>
-        <div class="c3"><label>City *</label><input type="text" name="v_city" required></div>
-        <div class="c1"><label>State *</label><input type="text" name="v_state" maxlength="2" required></div>
-        <div class="c2"><label>ZIP *</label><input type="text" name="v_zip" required></div>
-        <div class="c2"><label>Phone *</label><input type="tel" name="v_phone" required></div>
-        <div class="c4"><label>Email *</label><input type="email" name="v_email" required></div>
-        <div class="c2"><label>Tax ID type *</label>
-          <div class="seg">
-            <label><input type="radio" name="tin_type" value="SSN">SSN</label>
-            <label><input type="radio" name="tin_type" value="EIN">EIN / FEIN</label>
-          </div>
-        </div>
-        <div class="c2"><label>Tax ID number * <span class="forms">(9 digits)</span></label><input type="text" name="tin" inputmode="numeric" required></div>
-        <div class="c2"></div>
-      </div>
-      <div class="note">Enter <b>either</b> the SSN or the EIN — whichever the provider uses with the IRS. Never both.</div>
-    </section>
-
-    <section class="card w9sec">
-      <h2><span class="n">3</span>W-9 tax details</h2>
-      <p class="hint">Usually leave on “Automatic”. Only needed for non-corporations.</p>
-      <div class="grid">
-        <div class="c3"><label>Federal tax classification (line 3a)</label>
-          <select name="w9_class">
-            <option value="auto">Automatic (from provider type)</option>
-            <option value="individual">Individual / sole proprietor</option>
-            <option value="ccorp">C corporation</option>
-            <option value="scorp">S corporation</option>
-            <option value="partnership">Partnership</option>
-            <option value="trust">Trust / estate</option>
-            <option value="llc">LLC</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="c1 llconly"><label>LLC code</label><select name="llc_code"><option value=""></option><option>C</option><option>S</option><option>P</option></select></div>
-        <div class="c2 otheronly"><label>Other – describe</label><input type="text" name="other_class"></div>
-      </div>
-      <div class="note">A single-member LLC that is a disregarded entity should choose “Individual / sole proprietor” and put the owner's name as the legal name and the LLC name as the business name.</div>
-    </section>
-
-    <section class="card">
-      <h2><span class="n">4</span>Vendor Information Form questions</h2>
-      <div class="q"><div class="qt">2. Does the provider meet the qualifications as a live-in?</div><div class="seg yn" data-name="live_in"></div></div>
-      <div class="q"><div class="qt">3. Provider's relationship to CDC+ participant</div>
-        <select name="relationship" style="width:auto"><option value=""></option><option>None</option><option>Parent</option><option>Spouse</option><option>Child</option><option>Sibling</option><option>Grandparent</option><option>Grandchild</option></select></div>
-      <div class="q"><div class="qt">4. Provider is a Medicaid-enrolled provider?</div><div class="seg yn" data-name="medicaid"></div></div>
-      <div class="q mcdonly"><div class="qt">&nbsp;&nbsp;&nbsp;Medicaid provider type (circled on form)</div>
-        <div style="display:flex;gap:12px"><label class="chk"><input type="checkbox" name="mcd_apd">APD Waiver</label><label class="chk"><input type="checkbox" name="mcd_general">General</label></div></div>
-      <div class="q mcdonly"><div class="qt">&nbsp;&nbsp;&nbsp;Medicaid Provider #</div><input type="text" name="medicaid_no" style="width:170px"></div>
-      <div class="q"><div class="qt">&nbsp;&nbsp;&nbsp;Current professional license from FL Dept. of Health for this profession?</div><div class="seg yn" data-name="doh_license"></div></div>
-      <div class="q dohonly"><div class="qt">&nbsp;&nbsp;&nbsp;DOH License #</div><input type="text" name="doh_no" style="width:170px"></div>
-      <div class="q"><div class="qt">5. Will this provider give direct care to the participant? <span class="forms" style="color:var(--mute)">(Yes → attach Level 2 screening)</span></div><div class="seg yn" data-name="direct_care"></div></div>
-      <div class="q"><div class="qt">6. Provider signed certificate of compliance with s. 402.3057, F.S.?</div><div class="seg yn" data-name="statute"></div></div>
-      <div class="q avonly"><div class="qt">7. Will the A/V need CDC+'s EVV system? <span style="color:var(--mute)">(not for ICs)</span></div><div class="seg yn" data-name="evv"></div></div>
-    </section>
-
-    <section class="card">
-      <h2><span class="n">5</span>Background screening &amp; Good Moral Character</h2>
-      <div class="grid">
-        <div class="c3"><label>Title on certification</label><input type="text" name="gm_title" placeholder="Independent Contractor"></div>
-        <div class="c3"><label>Signature section</label>
-          <select name="gm_disclosure"><option value="">Attest – no disqualifying offenses (page 3)</option><option value="1">Record contains disqualifying offense(s) (page 4)</option></select></div>
-        <div class="c6" style="margin-top:4px"><b style="font-size:12.5px">Prior Level 2 screening within 5 years</b> <span class="file">(optional – only if using this form as proof of prior screening)</span></div>
-        <div class="c3"><label>Purpose of prior screening</label><input type="text" name="prior_purpose"></div>
-        <div class="c2"><label>Screening conducted by</label>
-          <select name="prior_by"><option value=""></option><option value="AHCA">Agency for Health Care Administration</option><option value="APD">Agency for Persons with Disabilities</option><option value="DFS">Dept. of Financial Services</option><option value="DOH">Dept. of Health</option><option value="DOEA">Dept. of Elder Affairs</option><option value="DCF">Dept. of Children and Families</option></select></div>
-        <div class="c1"><label>Date</label><input type="date" name="prior_date"></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2><span class="n">6</span>Direct Deposit (EFT)</h2>
-      <div class="grid">
-        <div class="c3"><label>Form is for</label>
-          <select name="dd_for"><option value="">Automatic (from provider type)</option><option value="Independent Contractor">Independent Contractor</option><option value="Vendor">Vendor</option><option value="Employee">Employee</option><option value="ConsRep">Cons/Rep</option></select></div>
-        <div class="c3"><label>Account type *</label><div class="seg"><label><input type="radio" name="acct_type" value="Checking">Checking</label><label><input type="radio" name="acct_type" value="Savings">Savings</label></div></div>
-        <div class="c6"><label>Bank name *</label><input type="text" name="bank_name" required></div>
-        <div class="c3"><label>Routing number (9 digits) *</label><input type="text" name="routing" inputmode="numeric" maxlength="11" required></div>
-        <div class="c3"><label>Account number *</label><input type="text" name="account" inputmode="numeric" required></div>
-        <div class="c6"><label>Attaching</label><div class="seg"><label><input type="radio" name="dd_attach" value="check">Voided check</label><label><input type="radio" name="dd_attach" value="letter">Bank letter / specification sheet</label></div></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2><span class="n">7</span>Dates &amp; attachments</h2>
-      <div class="grid">
-        <div class="c2"><label>Vendor Form date *</label><input type="date" name="form_date" required></div>
-        <div class="c2"><label>Signature date</label><input type="date" name="sign_date"></div>
-        <div class="c2" style="align-self:end"><label class="chk"><input type="checkbox" name="fill_sign_date">Print signature dates on forms</label></div>
-        <div class="c3"><label>Background Screening Clearance Letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_bg" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_bg_n"></div></div>
-        <div class="c3"><label>Voided check / bank letter <span class="forms">(PDF/JPG/PNG)</span></label><input type="file" id="att_check" accept=".pdf,.png,.jpg,.jpeg"><div class="file" id="att_check_n"></div></div>
-      </div>
-      <div class="note">Attachments are placed into the combined packet in APD's order. They are used for this session only and are not saved with the record.</div>
-    </section>
-  </main>
-
-  <!-- GENERATE -->
-  <aside class="side">
-    <div class="card">
-      <h2>Generate documents</h2>
-      <p class="hint">Packet order: Vendor Form → W-9 → Background letter → Good Moral → Direct Deposit → voided check.</p>
-      <div id="docList"></div>
-      <div id="issues"></div>
-      <div class="btnrow">
-        <button class="pri" id="btnPacket">Download full packet (1 PDF)</button>
-        <button id="btnEach">Download each form separately</button>
-      </div>
-      <div class="note">Separate files keep the fields editable for last-minute changes. The combined packet is flattened for printing. Signature lines are left blank. Signatures needed: provider on W-9, Good Moral and Direct Deposit.</div>
-    </div>
-  </aside>
-</div>
-
-
-<div class="modal hide" id="helpModal"><div class="box" style="max-width:680px">
-  <h2 style="margin:0 0 6px;font-size:18px">Welcome to the CDC+ Packet Builder</h2>
-  <p>This tool helps CDC+ participants and representatives complete the <b>Vendor / Independent Contractor packet</b> without filling the same information into four different forms.</p>
-  <ol class="steps">
-    <li><b>Answer the questions</b> in sections 1–7. Required items are marked with *. The panel on the right shows what is still missing.</li>
-    <li><b>Attach</b> the provider's Level 2 background screening letter and a voided check (or bank letter) if you have them — a photo or PDF is fine.</li>
-    <li><b>Download</b> the full packet (one PDF, in the order APD requires) or each form separately.</li>
-    <li><b>Print, sign and date</b>: the provider signs the W-9, the Good Moral Character certification and the Direct Deposit form. Keep a copy, then send the packet with your updated Purchasing Plan or Quick Update form to your CDC+ consultant.</li>
-  </ol>
-  <h3>Your privacy</h3>
-  <p>Everything you type — including Social Security, tax ID and bank numbers — stays <b>on this device, in this browser</b>. Nothing is uploaded or sent anywhere; the PDFs are created on your device. Use <i>Export backup</i> to keep a copy, and <i>Erase all data on this device</i> when you are done, especially on a shared or public computer.</p>
-  <h3>Important</h3>
-  <p class="disclaimer">This is an independent helper tool. It is not made, endorsed or reviewed by the Agency for Persons with Disabilities (APD), the CDC+ program or the IRS. Always review every completed form before signing. Form versions included: Vendor Information Form (eff. 7/15/21), IRS Form W-9 (Rev. March 2024), Certification of Good Moral Character (updated 3/11/2016), Direct Deposit/EFT Request (eff. 05/05/2016). If your consultant gives you a newer version of a form, use that one.</p>
-  <div style="text-align:right;margin-top:12px"><button class="pri" id="helpOk">Get started</button></div>
-</div></div>
-<footer>CDC+ Packet Builder v<span id="ver"></span> · Independent tool, not affiliated with APD or the IRS · Your data never leaves this device.</footer>
-<div class="toast" id="toast"></div>
-<div class="modal hide" id="mapModal"><div class="box">
-  <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px">Master field → form field map</h2><button class="sm" onclick="document.getElementById('mapModal').classList.add('hide')">Close</button></div>
-  <div id="mapTable" style="margin-top:10px"></div>
-</div></div>
-
-<script src="lib/pdf-lib.min.js"></script>
-<script src="forms/templates.js"></script>
-<script src="fill.js"></script>
-<script src="app.js"></script>
+  <div class="card home-info">
+    <h3>How it works</h3>
+    <ol class="steps">
+      <li>Choose a packet and answer the questions. Details you enter for a participant can be reused in both packets.</li>
+      <li>Attach the Level 2 background screening letter and a pre-printed voided check, if you have them.</li>
+      <li>Download the complete packet as one PDF in APD's order, print, sign, and send it to your CDC+ consultant with the updated Purchasing Plan or Quick Update.</li>
+    </ol>
+    <h3>Your privacy</h3>
+    <p>Everything you type stays <b>on this device, in this browser</b>. Nothing is uploaded and no account is needed. Each packet page has an <i>Erase all data on this device</i> button for shared computers.</p>
+    <p class="disclaimer">Independent helper tool, not made, endorsed or reviewed by the Agency for Persons with Disabilities (APD), the CDC+ program, the IRS or USCIS. Always review every completed form before signing, and use the newest form version your consultant provides.</p>
+  </div>
+</main>
+<footer>CDC+ Packet Builder v<span id="ver"></span> · Your data never leaves this device.</footer>
+<script src="version.js"></script>
+<script>
+  document.getElementById('ver').textContent = window.APP_VERSION;
+  const count = k => { try { return ((JSON.parse(localStorage.getItem(k)) || {}).records || []).filter(r => r.data && (r.data.e_first || r.data.e_last || r.data.v_name)).length; } catch (e) { return 0; } };
+  const nE = count('cdcEmpPacketRecords.v1'), nV = count('cdcPacketRecords.v1');
+  if (nE) document.getElementById('nEmp').textContent = nE + ' saved employee' + (nE > 1 ? 's' : '');
+  if (nV) document.getElementById('nVen').textContent = nV + ' saved provider' + (nV > 1 ? 's' : '');
+  let deferred = null; const ib = document.getElementById('btnInstall');
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; ib.classList.remove('hide'); });
+  ib.onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; ib.classList.add('hide'); };
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
 </body>
 </html>

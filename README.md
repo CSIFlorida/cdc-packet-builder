@@ -1,13 +1,24 @@
-# CDC+ Vendor / IC Packet Builder
+# CDC+ Packet Builder
 
-A free web app that lets CDC+ participants and representatives complete the **Vendor / Independent Contractor packet** by answering one questionnaire. It fills these forms on their original layouts:
+A free web app that lets CDC+ participants and representatives complete provider paperwork by answering one questionnaire. The home screen has a button for each packet:
 
+**Direct-Hire Employee Packet** (`employee.html`), in APD's order:
+1. Employee Information Form (eff. 12/2/2014)
+2. IRS Form W-4 (2026)
+3. Form I-9 (Edition 01/20/25)
+4. Level 2 Background Screening Clearance Letter (uploaded attachment)
+5. Certification of Good Moral Character (updated 3/11/2016)
+6. Direct Deposit / EFT Request (eff. 05/05/2016) and the voided check (uploaded attachment)
+7. Change of Name/Address (eff. 11/2/2017), only when there is a name or address change
+
+**Vendor / Independent Contractor Packet** (`vendor.html`):
 1. Vendor Information Form (eff. 7/15/21)
 2. IRS Form W-9 (Rev. March 2024)
-3. Certification of Good Moral Character (updated 3/11/2016)
-4. Direct Deposit / EFT Request (eff. 05/05/2016)
+3. Background screening letter (uploaded attachment)
+4. Certification of Good Moral Character
+5. Direct Deposit / EFT Request and the voided check (uploaded attachment)
 
-It then downloads one print-ready packet in APD's order. The background screening letter and voided check can be attached and are merged in. The packet can also be downloaded as separate forms that can still be edited.
+Each packet downloads as one print-ready PDF in APD's order, or as separate forms that can still be edited. A participant's details entered in either packet can be reused in the other.
 
 ## Privacy
 
@@ -45,9 +56,14 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 
 | File | Purpose |
 |---|---|
-| `index.html` | The app page |
-| `app.css`, `app.js` | Look and behavior of the questionnaire |
-| `fill.js` | Field mapping: places each answer on each form |
+| `index.html` | Home screen with a button for each packet |
+| `employee.html`, `employee.js` | Direct-Hire Employee questionnaire and its checks |
+| `vendor.html`, `vendor.js` | Vendor / IC questionnaire and its checks |
+| `core.js` | Shared engine: saved records, attachments, downloads, privacy |
+| `app.css` | Look of all pages |
+| `fill.js` | Vendor packet field mapping, plus the shared Good Moral and Direct Deposit fillers |
+| `fill-employee.js` | Employee packet field mapping |
+| `version.js` | App version number |
 | `lib/pdf-lib.min.js` | PDF library (pdf-lib 1.17.1, MIT license) |
 | `forms/originals/*.pdf` | The blank forms |
 | `forms/templates.js` | The same blank forms, embedded for offline use |
@@ -56,7 +72,7 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 
 ## Updating
 
-- **To change the app:** edit the files, then raise the version in `app.js` (`VERSION`) and in `sw.js` (`CACHE`). Returning users pick up the new version on their next visit.
+- **To change the app:** edit the files, then raise the version in `version.js` and in `sw.js` (`CACHE`). Returning users pick up the new version on their next visit.
 - **When APD or the IRS releases a new form:**
   1. Replace the PDF in `forms/originals/`, keeping the same file name.
   2. Run `python3 tools/build-templates.py`.
