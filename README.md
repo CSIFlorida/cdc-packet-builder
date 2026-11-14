@@ -12,7 +12,8 @@ The consultant-interview pages of the Application Packet are intentionally left 
 
 **Consumer Database** (`consumers.html`): one profile per consumer, kept only in the browser on this device.
 - Holds identity, address, guardian, CDC+ Representative, consultant, APD area and FFI, monthly budget, Support Plan and Cost Plan dates, approved Cost Plan services and the latest monthly statement.
-- Attached documents (Budget Calculation Worksheet, Cost Plan, statements, etc.) are kept with the profile in IndexedDB.
+- Attached documents are kept with the profile in IndexedDB.
+- The app reads text-based PDFs of the **Budget Authorization Form**, the iBudget **Fiscal Year Cost Plan** and the **CDC+ Monthly Statement** (`readers.js`, pdf.js). It shows every proposed change for review before applying it, and offers to create a new consumer when the document is for someone else. Scans can be attached but not read. The Budget Calculation Worksheet still needs a sample before it can be read.
 - Every section's "Fill from the Consumer Database" list, and the profile's "Use this profile" buttons, fill that section from the profile.
 - Export backup / Import cover the profiles, all packets and the documents. The backup file contains private data, so store it securely.
 
@@ -87,6 +88,7 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 | `fill-application.js` | Application & Enrollment packet field mapping (text placed by position on the flat IRS and scanned APD pages) |
 | `forms/tpl-*.js` | Blank forms embedded per packet, so each page loads only its own forms |
 | `consumers.html`, `consumers.js` | Consumer Database |
+| `readers.js`, `lib/pdf.min.js` | Reads the BAF, Cost Plan and Monthly Statement PDFs (pdf.js 3.11, Apache-2.0) |
 | `docs.js` | Document store (IndexedDB) for attached PDFs and images |
 | `grid.js` | Editable line tables (Purchasing Plan, Cost Plan services) |
 | `core.js` | Shared engine: saved records, attachments, downloads, privacy |

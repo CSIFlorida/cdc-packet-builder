@@ -50,7 +50,7 @@
       const need = (k, l) => { if (!String(d[k] || '').trim()) { out.push(l + ' is missing'); bad.add(k); } };
       need('eff_month', 'Effective date'); need('budget', 'Monthly budget'); need('area', 'APD Area'); need('ffi', 'FFI yes/no');
       need('p_first', 'Participant first name'); need('p_last', 'Participant last name'); need('p_id', 'CDC+ ID #'); need('age', 'Age');
-      if (d.p_id && String(d.p_id).replace(/\D/g, '').length !== 7) { out.push('CDC+ ID # must be 7 digits'); bad.add('p_id'); }
+      if (d.p_id && String(d.p_id).replace(/\D/g, '').length > 7) { out.push('CDC+ ID # has more than 7 digits'); bad.add('p_id'); }
       if (d.has_rep && !(d.r_first && d.r_last)) out.push('Enter the Representative\'s name');
       if (!d.reason) out.push('Choose the reason for submitting');
       if (d.reason === 'new' && !d.baf) out.push('New Start: the Budget Authorization Form must be attached');

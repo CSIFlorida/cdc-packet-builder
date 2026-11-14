@@ -63,7 +63,7 @@
         <div class="c2"><label>First name *</label><input type="text" name="p_first"></div>
         <div class="c1"><label>MI</label><input type="text" name="p_mi" maxlength="1"></div>
         <div class="c3"><label>Last name *</label><input type="text" name="p_last"></div>
-        <div class="c2"><label>CDC+ ID # <span class="forms">(7 digits)</span></label><input type="text" name="p_id" inputmode="numeric" data-digits="7"></div>
+        <div class="c2"><label>CDC+ ID #</label><input type="text" name="p_id" inputmode="numeric" data-digits="7"></div>
         <div class="c2"><label>Medicaid ID # <span class="forms">(10 digits)</span></label><input type="text" name="p_medicaid" inputmode="numeric" data-digits="10"></div>
         <div class="c2"><label>Social Security #</label><input type="text" name="p_ssn" inputmode="numeric"></div>
         <div class="c2"><label>Date of birth</label><input type="date" name="p_dob"></div>
@@ -136,6 +136,7 @@
         <div class="c2"><label>Employer EIN <span class="forms">(from APD, if known)</span></label><input type="text" name="p_ein"></div>
         <div class="c2"><label>Approved CDC+ monthly budget ($)</label><input type="text" name="budget" inputmode="decimal"></div>
         <div class="c2"><label>Budget effective month</label><input type="month" name="budget_month"></div>
+        <div class="c2"><label>Anticipated CDC+ start date</label><input type="date" name="cdc_start"></div>
         <div class="c2"><label>Annual Cost Plan amount ($)</label><input type="text" name="cp_annual" inputmode="decimal"></div>
         <div class="c2"><label>Support Plan date</label><input type="date" name="sp_date"></div>
         <div class="c2"><label>Cost Plan from</label><input type="date" name="cp_from"></div>
@@ -161,7 +162,7 @@
 
     <section class="card">
       <h2><span class="n">7</span>Documents</h2>
-      <p class="hint">Keep the consumer's papers with the profile (stored only in this browser). Choose the type, then the file.</p>
+      <p class="hint">Keep the consumer's papers with the profile (stored only in this browser). The app <b>reads</b> the Budget Authorization Form, the Cost Plan and the CDC+ Monthly Statement and offers to fill the profile from them — you review every change first.</p>
       <div class="grid">
         <div class="c3"><label>Document type</label><select id="docKind">
           <option>Budget Calculation Worksheet</option><option>Budget Authorization Form</option><option>Cost Plan</option><option>Support Plan</option>
@@ -169,7 +170,7 @@
         <div class="c3"><label>File <span class="forms">(PDF, JPG or PNG)</span></label><input type="file" id="docFile" accept=".pdf,.png,.jpg,.jpeg"></div>
       </div>
       <div id="docListDB" style="margin-top:10px"></div>
-      <div class="note">Reading the figures out of these PDFs automatically is being set up — it needs a sample of each document so the app learns its layout.</div>
+      <div class="note">Works with PDFs downloaded or printed to PDF from APD/iBudget (text you can select). Scanned papers can be attached, but their figures must be typed in. The Budget Calculation Worksheet can be attached; reading it needs a sample of its layout.</div>
     </section>
 
     <section class="card">
@@ -209,6 +210,15 @@
 </div></div>
 <footer>CSI Florida - CDC Application App v<span id="ver"></span> · Your data never leaves this device.</footer>
 <div class="toast" id="toast"></div>
+<div class="modal hide" id="readModal"><div class="box" style="max-width:820px">
+  <h2 style="margin:0 0 4px;font-size:17px" id="rdTitle">Read document</h2>
+  <div id="rdBody"></div>
+  <div class="btnrow" style="justify-content:flex-end;margin-top:12px">
+    <button id="rdCancel">Cancel</button>
+    <button id="rdNew" class="hide">Create a new consumer from it</button>
+    <button class="pri" id="rdApply">Apply selected to this profile</button>
+  </div>
+</div></div>
 <div class="modal hide" id="mapModal"><div class="box">
   <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px">Where the profile data is used</h2><button class="sm" onclick="document.getElementById('mapModal').classList.add('hide')">Close</button></div>
   <div id="mapTable" style="margin-top:10px"></div>
@@ -217,6 +227,8 @@
 <script src="fill-purchasing.js"></script>
 <script src="grid.js"></script>
 <script src="docs.js"></script>
+<script src="lib/pdf.min.js"></script>
+<script src="readers.js"></script>
 <script src="version.js"></script>
 <script src="core.js"></script>
 <script src="consumers.js"></script>
