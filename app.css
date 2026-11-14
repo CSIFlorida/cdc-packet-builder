@@ -117,3 +117,31 @@
   .install-card img{border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.18);flex:none}
   .install-card h3{margin:2px 0 4px;font-size:16px}.install-card p{margin:0 0 6px;color:var(--mute)}
   .install-help{margin-top:10px;background:#f0f6ff;border:1px solid #b9cff2;border-radius:8px;padding:9px 11px;font-size:13px}
+  .wrap.wide{grid-template-columns:230px minmax(0,1fr) 300px;max-width:1700px}
+  @media(max-width:1150px){.wrap.wide{grid-template-columns:1fr}}
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;margin-top:8px}
+  table.lines{border-collapse:collapse;width:100%;font-size:12.5px}
+  table.lines th{background:#f0f3f8;font-weight:600;text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:11.5px}
+  table.lines td{border-bottom:1px solid #eef1f5;padding:3px 4px;vertical-align:top}
+  table.lines input,table.lines select,table.lines textarea{width:100%;padding:4px 5px;border:1px solid #cfd6e1;border-radius:5px;font:inherit;font-size:12.5px;margin:0;background:#fff}
+  table.lines textarea{resize:vertical;min-height:30px}
+  table.lines td.ix{color:var(--mute);text-align:center;width:22px;padding-top:8px}
+  table.lines td.calc{white-space:nowrap;text-align:right;padding-top:8px;color:#1d3a66;font-variant-numeric:tabular-nums}
+  table.lines td.act{white-space:nowrap}
+  table.lines td.act button{padding:2px 6px;margin-left:2px}
+  table.lines tr.crit td{background:#fff8ec}
+  table.lines tr.ebu td{background:#f4f8ff}
+  table.lines tr.ebu td.ix::before{content:"↳ "}
+  .sumtbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px}
+  .sumtbl td{padding:5px 2px;border-bottom:1px solid #eef1f5}.sumtbl td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .sumtbl tr.b td{font-weight:700}.sumtbl tr.bad td{color:var(--bad);font-weight:700}.sumtbl tr.ok td:last-child{color:var(--ok);font-weight:600}
+  body.pp header{background:#7a3b12}
+  body.pp .card h2 .n{background:#c0601d}
+  body.pp button.pri{background:#c0601d;border-color:#c0601d}
+  body.pp .seg label:has(input:checked){background:#c0601d;border-color:#c0601d}
+  .tile.t-pp{border-top-color:#c0601d}.tile.t-pp .tile-go{color:#c0601d}
+  .tiles.four{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:1200px){.tiles.four{grid-template-columns:1fr 1fr}}
+  @media(max-width:700px){.tiles.four{grid-template-columns:1fr}}
+  table.lines td.ix{white-space:nowrap;width:34px}
+  table.lines{min-width:1100px}

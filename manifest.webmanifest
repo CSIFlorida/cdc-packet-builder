@@ -102,6 +102,18 @@
       ]
     },
     {
+      "name": "CDC+ Purchasing Plan",
+      "short_name": "Purchasing Plan",
+      "url": "./purchasing.html",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "Direct-Hire Employee Packet",
       "short_name": "Employee packet",
       "url": "./employee.html",

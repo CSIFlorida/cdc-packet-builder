@@ -10,6 +10,14 @@ A free web app that lets CDC+ participants and representatives complete CDC+ pap
 
 The consultant-interview pages of the Application Packet are intentionally left out, because they are not submitted to CDC+.
 
+**CDC+ Purchasing Plan** (`purchasing.html`), written once the participant is approved and has a Budget Authorization Form:
+- Fills APD's own Purchasing Plan workbook (Version 3.0-C, `forms/originals/purchasing_plan_3.0-C.xlsx`) and keeps every formula, drop-down and print setting.
+- Covers Page 1 basics and reason for submitting, B. Needs, C.1 Services with emergency backups, C.2 Supplies, D. Cash, E. Savings, F. OTE/STE and the Page 6 budget summary.
+- Calculates employer taxes (11.15% for DHEs with relationship 5) and the *EBU Added Cost*, which replaces Excel's macro button. Service lines spill onto Page 3A and 3B without ever splitting a critical service from its EBUs, and unused extra pages are hidden.
+- Checks the plan against the Purchasing Plan Instructions (2012-12-19).
+- Provider names, types and relationships can be filled in from the Employee and Vendor packets saved in the app.
+- Download is an .xlsx file. APD's original .xls template is kept in `forms/originals/` for reference.
+
 **Direct-Hire Employee Packet** (`employee.html`), in APD's order:
 1. Employee Information Form (eff. 12/2/2014)
 2. IRS Form W-4 (2026)
@@ -68,6 +76,8 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 | `employee.html`, `employee.js` | Direct-Hire Employee questionnaire and its checks |
 | `vendor.html`, `vendor.js` | Vendor / IC questionnaire and its checks |
 | `application.html`, `application.js` | Participant Application questionnaire and its checks |
+| `purchasing.html`, `purchasing.js`, `fill-purchasing.js` | Purchasing Plan questionnaire, line tables, calculations and Excel writer |
+| `lib/exceljs.min.js` | Excel library (ExcelJS 4.4.0, MIT license) |
 | `fill-application.js` | Application & Enrollment packet field mapping (text placed by position on the flat IRS and scanned APD pages) |
 | `forms/tpl-*.js` | Blank forms embedded per packet, so each page loads only its own forms |
 | `core.js` | Shared engine: saved records, attachments, downloads, privacy |

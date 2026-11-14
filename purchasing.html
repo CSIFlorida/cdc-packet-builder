@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Purchasing Plan · CSI Florida - CDC Application App</title>
+<meta name="description" content="Complete the CDC+ Purchasing Plan (APD Version 3.0-C): needs, services and emergency backups, supplies, cash, savings and OTE/STE — calculated and written into APD's Excel workbook.">
+<meta name="theme-color" content="#14294d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<meta name="application-name" content="CSI Florida CDC">
+<meta name="apple-mobile-web-app-title" content="CSI Florida CDC">
+<meta property="og:title" content="CDC+ Purchasing Plan · CSI Florida">
+<meta property="og:image" content="https://csiflorida.github.io/cdc-packet-builder/icons/social-card.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="pp">
+<header>
+  <img src="icons/icon-192.png" alt="CSI Florida logo" width="44" height="44" class="hdr-logo">
+  <div>
+    <h1>CDC+ Purchasing Plan</h1>
+    <div class="sub">How the approved monthly budget will be spent — written into APD's Purchasing Plan workbook (Version 3.0-C), calculated and ready to sign.</div>
+  </div>
+  <div class="hdr-btns">
+    <a class="btn sm ghost" href="index.html">⌂ Home</a>
+    <a class="btn sm ghost" href="employee.html">Employee packet</a>
+    <a class="btn sm ghost" href="vendor.html">Vendor / IC packet</a>
+    <button class="sm ghost hide" id="btnInstall">Install app</button>
+    <button class="sm ghost" id="showMap">Field map</button>
+    <button class="sm ghost" id="btnHelp">Help &amp; privacy</button>
+  </div>
+  <div class="progress" title="Required information completed"><div id="progBar"></div><span id="progTxt">0%</span></div>
+</header>
+
+<div class="wrap wide">
+  <aside class="side">
+    <div class="card">
+      <h2>Saved plans</h2>
+      <p class="hint">Stored only in this browser on this computer.</p>
+      <div id="recList"></div>
+      <div class="btnrow">
+        <button class="sm pri" id="btnNew">+ New</button>
+        <button class="sm" id="btnDup" title="Start a new plan for the same participant">Duplicate</button>
+        <button class="sm" id="btnDel">Delete</button>
+      </div>
+      <div class="btnrow">
+        <button class="sm" id="btnCopyPlan" title="Copy every section of this plan into a new plan (for an update or change)">Copy whole plan</button>
+      </div>
+      <div class="btnrow">
+        <button class="sm" id="btnExport">Export backup</button>
+        <button class="sm" type="button" onclick="document.getElementById('imp').click()">Import</button>
+        <input type="file" id="imp" accept=".json" class="hide">
+      </div>
+      <div class="btnrow"><button class="sm danger" id="btnWipe">Erase all data on this device</button></div>
+    </div>
+    <div class="card">
+      <h2>Have at hand</h2>
+      <ul class="checklist">
+        <li><b>Budget Authorization Form</b> (monthly budget, CDC+ ID)</li>
+        <li>Current approved <b>Support Plan</b> and <b>Cost Plan</b></li>
+        <li>Each provider's legal name, type and rate</li>
+        <li>Latest monthly statement (for Savings)</li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="f">
+    <section class="card">
+      <h2><span class="n">1</span>Plan basics &amp; participant (Page 1)</h2>
+      <div class="pick hide"><select id="pPick"></select></div>
+      <div class="grid">
+        <div class="c2"><label>Effective date * <span class="forms">(always the 1st of a month)</span></label><input type="month" name="eff_month"></div>
+        <div class="c2"><label>Approved monthly budget * <span class="forms">($)</span></label><input type="text" name="budget" inputmode="decimal" placeholder="0.00"></div>
+        <div class="c1"><label>APD Area *</label><select name="area"><option value=""></option></select></div>
+        <div class="c1"><label>On FFI? *</label><select name="ffi"><option value=""></option><option>No</option><option>Yes</option></select></div>
+        <div class="c2"><label>First name *</label><input type="text" name="p_first"></div>
+        <div class="c1"><label>MI</label><input type="text" name="p_mi" maxlength="1"></div>
+        <div class="c3"><label>Last name *</label><input type="text" name="p_last"></div>
+        <div class="c2"><label>CDC+ ID # * <span class="forms">(7 digits, on the Budget Authorization Form)</span></label><input type="text" name="p_id" inputmode="numeric" data-digits="7"></div>
+        <div class="c2"><label>Date of birth <span class="forms">(for the age)</span></label><input type="date" name="p_dob"></div>
+        <div class="c2"><label>Age on the effective date *</label><input type="text" name="age" inputmode="numeric"></div>
+        <div class="c6"><label class="chk"><input type="checkbox" name="has_rep">The participant has a CDC+ Representative</label></div>
+        <div class="c2 reponly"><label>Representative first name</label><input type="text" name="r_first"></div>
+        <div class="c1 reponly"><label>MI</label><input type="text" name="r_mi" maxlength="1"></div>
+        <div class="c3 reponly"><label>Representative last name</label><input type="text" name="r_last"></div>
+        <div class="c2"><label>Phone # <span class="forms">(Representative's, if any)</span></label><input type="tel" name="pp_phone"></div>
+        <div class="c2"><label>Cell #</label><input type="tel" name="pp_cell"></div>
+        <div class="c2"><label>How APD can reach you <span class="forms">(phone / email)</span></label><input type="text" name="pp_contact"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">2</span>Reason for submitting (Page 1 — consultant)</h2>
+      <div class="seg">
+        <label><input type="radio" name="reason" value="new">New Start (first plan)</label>
+        <label><input type="radio" name="reason" value="change">Plan CHANGE (budget changed and/or new OTE/STE)</label>
+        <label><input type="radio" name="reason" value="update">Plan UPDATE (no budget change, no new OTE/STE)</label>
+      </div>
+      <div class="grid r-new" style="margin-top:10px">
+        <div class="c6"><label class="chk"><input type="checkbox" name="baf">Budget Authorization Form is attached (required)</label></div>
+        <div class="c2"><label>Budget changed from the Application to</label><input type="text" name="new_budget_changed" inputmode="decimal" placeholder="$ (only if changed)"></div>
+        <div class="c2"><label>due to</label><select name="new_budget_due"><option value=""></option><option value="spcp">SP/CP update</option><option value="recalc">Recalculation</option></select></div>
+        <div class="c2"></div>
+        <div class="c3"><label>Add One-Time Expenditure amount <span class="forms">(≤100% of Cost Plan)</span></label><input type="text" name="new_ote" inputmode="decimal" placeholder="$"></div>
+        <div class="c3"><label>Add Short-Term Expenditure amount <span class="forms">(≤92% of Cost Plan)</span></label><input type="text" name="new_ste" inputmode="decimal" placeholder="$"></div>
+      </div>
+      <div class="grid r-change" style="margin-top:10px">
+        <div class="c2"><label>Change monthly budget amount to</label><input type="text" name="chg_budget" inputmode="decimal" placeholder="$"></div>
+        <div class="c2"><label>Add OTE amount <span class="forms">(≤100%)</span></label><input type="text" name="chg_ote" inputmode="decimal" placeholder="$"></div>
+        <div class="c2"><label>Add STE amount <span class="forms">(≤92%)</span></label><input type="text" name="chg_ste" inputmode="decimal" placeholder="$"></div>
+      </div>
+      <div class="grid r-rev" style="margin-top:10px">
+        <div class="c3"><label>Revisions have been made on page(s)</label><input type="text" name="revised_pages" placeholder="e.g. 3, 5"></div>
+      </div>
+      <div class="note">Items marked in yellow on APD's Page 1 (lines 11–22) are the participant's: revised pages, new representative, provider packets, providers no longer used and the page count (filled automatically).</div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">3</span>Representative, cash and provider packets (Page 1, lines 12–21)</h2>
+      <label class="chk"><input type="checkbox" name="newrep">The participant selected a NEW Representative</label>
+      <div class="grid newreponly" style="margin-top:8px">
+        <div class="c2"><label>Effective</label><input type="date" name="newrep_date"></div>
+        <div class="c4" style="align-self:end"><label class="chk"><input type="checkbox" name="newrep_piu">Participant Information Update form is attached (required)</label></div>
+        <div class="c6"><label class="chk"><input type="checkbox" name="newrep_was_emp">New Representative used to work for the participant — removed from this plan</label></div>
+        <div class="c6"><label class="chk"><input type="checkbox" name="oldrep_now_emp">Former Representative is starting to work for the participant — added to this plan</label></div>
+      </div>
+      <label style="margin-top:10px">Total amount of CASH (Section D) has been revised</label>
+      <div class="seg"><label><input type="radio" name="cash_change" value="">Not marked</label><label><input type="radio" name="cash_change" value="increase">Increase</label><label><input type="radio" name="cash_change" value="decrease">Decrease</label><label><input type="radio" name="cash_change" value="none">No change</label></div>
+      <div class="grid" style="margin-top:10px">
+        <div class="c3"><label>New <b>Employee</b> packets attached for <span class="forms">(one name per line)</span> <button type="button" class="sm" id="fillEmp">Fill from saved Employee packets</button></label><textarea name="pk_emp" rows="3"></textarea></div>
+        <div class="c3"><label>New <b>Vendor / IC</b> packets attached for <span class="forms">(one per line)</span> <button type="button" class="sm" id="fillVen">Fill from saved Vendor packets</button></label><textarea name="pk_ven" rows="3"></textarea></div>
+        <div class="c6"><label>Providers who will <b>no longer be used</b> <span class="forms">(one per line)</span></label><textarea name="gone" rows="2"></textarea></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">4</span>B. Needs (Page 2)</h2>
+      <p class="hint">From the current Support Plan (column 1) and Cost Plan (column 2); column 3 is what this plan buys. Every item in the plan must appear here. Restricted services: plan at least 92% of the Cost Plan units. No quarter hours in CDC+ (480 QH a year = 120 hours = 10 hours a month).</p>
+      <div class="grid">
+        <div class="c2"><label>Current Waiver Support Plan date</label><input type="date" name="sp_date"></div>
+        <div class="c2"><label>Current Waiver Cost Plan date</label><input type="text" name="cp_date" placeholder="mm/dd/yyyy or 2026/2027"></div>
+      </div>
+      <div class="gridtbl" id="g_needs"></div>
+      <input type="hidden" name="tbl_needs">
+    </section>
+
+    <section class="card">
+      <h2><span class="n">5</span>C.1 Services (Page 3)</h2>
+      <p class="hint">Regular monthly services. A <b>critical</b> service (Y) needs at least two emergency backups (<b>EBU</b>) listed right under it, for a full month (same # of units and unit type). Directly hired employees are always paid by the hour. Employer taxes (11.15%) apply only to DHEs with relationship 5.</p>
+      <div class="gridtbl" id="g_svc"></div>
+      <input type="hidden" name="tbl_svc">
+      <datalist id="provList"></datalist>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">6</span>C.2 Supplies (Page 3)</h2>
+      <p class="hint">Consumable medical supplies (CMS, code 63) invoiced monthly. Describe each item and package size (e.g. “Adult briefs, 60”), not “hygiene supplies”.</p>
+      <div class="gridtbl" id="g_sup"></div>
+      <input type="hidden" name="tbl_sup">
+    </section>
+
+    <section class="card">
+      <h2><span class="n">7</span>D. Cash (Page 4) and explanation of Savings</h2>
+      <p class="hint">Purchases made with a monthly cash check (only if used).</p>
+      <div class="gridtbl" id="g_cash"></div>
+      <input type="hidden" name="tbl_cash">
+      <label style="margin-top:12px">Explain how the Savings (Section E) purchases meet the participant's needs/goals or increase independence, when each will be used, and how the funds will be accumulated</label>
+      <textarea name="explain" rows="4"></textarea>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">8</span>E. Savings Plan (Page 5)</h2>
+      <div class="grid">
+        <div class="c2"><label>Most current statement (month)</label><input type="month" name="st_date"></div>
+        <div class="c2"><label>Statement balance ($)</label><input type="text" name="st_balance" inputmode="decimal"></div>
+        <div class="c2"><label>Total unrestricted funds available ($)</label><input type="text" name="unrestricted" inputmode="decimal"></div>
+      </div>
+      <div class="note" id="savNote"></div>
+      <div class="gridtbl" id="g_sav"></div>
+      <input type="hidden" name="tbl_sav">
+      <p class="hint" style="margin-top:6px">Description: the service abbreviation plus exactly what is being bought (e.g. DME – hoyer lift). “Last date” is always the last day of a month and must be reachable within a year.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">9</span>F. One-Time and Short-Term Expenditures (Page 5)</h2>
+      <p class="hint">Only items approved on the Support Plan / Cost Plan. OTEs are only equipment (DME), home modifications (ENV) and vehicle modifications (VMOD), entered as 1 unit. STEs: plan at least 92% of the approved quantity.</p>
+      <div class="gridtbl" id="g_ote"></div>
+      <input type="hidden" name="tbl_ote">
+    </section>
+  </main>
+
+  <aside class="side">
+    <div class="card">
+      <h2>Budget summary (Page 6)</h2>
+      <table class="sumtbl" id="sumTbl"></table>
+      <div id="docList" class="hide"></div>
+      <div id="issues"></div>
+      <div class="btnrow">
+        <button class="pri" id="btnPacket">Download Purchasing Plan (Excel)</button>
+      </div>
+      <div class="note">The file is APD's own Purchasing Plan workbook with every formula and drop-down kept, so it can still be edited in Excel. Print it, number each page (“1 of 6”…), sign Page 6, and give it to the CDC+ Consultant with any new provider packets.</div>
+    </div>
+  </aside>
+</div>
+
+<div class="modal hide" id="helpModal"><div class="box" style="max-width:720px">
+  <h2 style="margin:0 0 6px;font-size:18px">CDC+ Purchasing Plan</h2>
+  <p>Once the participant is approved and has the <b>Budget Authorization Form</b>, the participant or CDC+ Representative writes a Purchasing Plan showing how the monthly budget will be used. This page fills APD's Purchasing Plan workbook (Version 3.0-C) for you.</p>
+  <ol class="steps">
+    <li><b>Basics</b>: effective date (1st of a month), approved monthly budget, APD area, FFI, participant and Representative.</li>
+    <li><b>Needs</b>: copy the needs/goals and approved services from the Support Plan and Cost Plan; list what this plan buys.</li>
+    <li><b>Services</b>: every regular monthly provider. For each critical service, list at least two EBUs right below it — the app computes the <i>EBU Added Cost</i> that Excel's macro button normally does.</li>
+    <li><b>Supplies, Cash, Savings, OTE/STE</b> as needed. The right-hand panel keeps the budget balanced: Services + Cash + Savings must equal the budget, and Savings can't be negative.</li>
+    <li><b>Download</b>, review in Excel, print, number the pages, sign Page 6, and give it to your consultant with the provider packets of anyone new on the plan.</li>
+  </ol>
+  <h3>Your privacy</h3>
+  <p>Everything stays <b>on this device, in this browser</b>. The Excel file is created on your device; nothing is uploaded.</p>
+  <h3>Important</h3>
+  <p class="disclaimer">Independent helper tool, not made, endorsed or reviewed by APD or the CDC+ program. It follows the Purchasing Plan Instructions (2012-12-19) and APD's template Version 3.0-C. Always use the newest template your consultant provides and review the plan before signing.</p>
+  <div style="text-align:right;margin-top:12px"><button class="pri" id="helpOk">Get started</button></div>
+</div></div>
+<footer>CSI Florida - CDC Application App v<span id="ver"></span> · Independent tool, not affiliated with APD · Your data never leaves this device.</footer>
+<div class="toast" id="toast"></div>
+<div class="modal hide" id="mapModal"><div class="box">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px">Where each answer goes in APD's workbook</h2><button class="sm" onclick="document.getElementById('mapModal').classList.add('hide')">Close</button></div>
+  <div id="mapTable" style="margin-top:10px"></div>
+</div></div>
+
+<script src="lib/exceljs.min.js"></script>
+<script src="forms/tpl-purchasing.js"></script>
+<script src="fill-purchasing.js"></script>
+<script src="version.js"></script>
+<script src="core.js"></script>
+<script src="purchasing.js"></script>
+</body>
+</html>

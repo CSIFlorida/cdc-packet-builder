@@ -1,8 +1,8 @@
 /* Shared engine for every packet page (records, validation display, attachments, PDF download, help, privacy). */
 window.PacketApp = function (cfg) {
   const VERSION = window.APP_VERSION;
-  const ALL_KEYS = ['cdcPacketRecords.v1', 'cdcEmpPacketRecords.v1', 'cdcAppRecords.v1']; // vendor/IC, employee, application stores
-  const PARTICIPANT_FIELDS = ['p_first', 'p_last', 'p_id', 'p_street', 'p_city', 'p_state', 'p_zip', 'rep_name', 'p_ein'];
+  const ALL_KEYS = ['cdcPacketRecords.v1', 'cdcEmpPacketRecords.v1', 'cdcAppRecords.v1', 'cdcPPRecords.v1']; // vendor/IC, employee, application, purchasing plan stores
+  const PARTICIPANT_FIELDS = ['p_first', 'p_mi', 'p_last', 'p_id', 'p_dob', 'p_street', 'p_city', 'p_state', 'p_zip', 'rep_name', 'p_ein', 'has_rep', 'r_first', 'r_mi', 'r_last', 'r_phone', 'r_cell', 'r_email', 'p_phone'];
   const KEY = cfg.KEY;
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const form = $('#f');
@@ -121,9 +121,9 @@ window.PacketApp = function (cfg) {
   const b64 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
   const TPL = {}; for (const k in window.TEMPLATES_B64) TPL[k] = b64(window.TEMPLATES_B64[k]);
   const clean = s => String(s || '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');
-  const fname = (d, suffix) => `${clean(cfg.fileName(d)) || 'Packet'}_${clean(d.p_last)}_${suffix}.pdf`;
+  const fname = (d, suffix) => cfg.makeFileName ? cfg.makeFileName(d, suffix) : `${clean(cfg.fileName(d)) || 'Packet'}_${clean(d.p_last)}_${suffix}.pdf`;
   function save(bytes, name) {
-    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    const url = URL.createObjectURL(new Blob([bytes], { type: cfg.mime || 'application/pdf' }));
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   }
@@ -135,16 +135,16 @@ window.PacketApp = function (cfg) {
   async function genOne(k) {
     try {
       confirmIssues(); const d = readForm();
-      const doc = await cfg.filler.buildOne(PDFLib, k, TPL, d, false);
+      const doc = await cfg.filler.buildOne(window.PDFLib, k, TPL, d, false);
       save(await doc.save(), fname(d, cfg.filler.DOCS.find(x => x.key === k).file));
     } catch (e) { console.error(e); toast('Error: ' + e.message); }
   }
-  $('#btnEach').onclick = async () => { const ks = $$('#docList input:checked').map(x => x.value); if (!ks.length) return toast('Select at least one document'); for (const k of ks) { await genOne(k); await new Promise(r => setTimeout(r, 350)); } };
+  if ($('#btnEach')) $('#btnEach').onclick = async () => { const ks = $$('#docList input:checked').map(x => x.value); if (!ks.length) return toast('Select at least one document'); for (const k of ks) { await genOne(k); await new Promise(r => setTimeout(r, 350)); } };
   $('#btnPacket').onclick = async () => {
     try {
       const ks = $$('#docList input:checked').map(x => x.value); if (!ks.length) return toast('Select at least one document');
       confirmIssues(); const d = readForm();
-      const p = await cfg.filler.buildPacket(PDFLib, TPL, d, ks, att);
+      const p = await cfg.filler.buildPacket(window.PDFLib, TPL, d, ks, att);
       save(await p.save(), fname(d, cfg.packetSuffix)); toast('Packet created');
     } catch (e) { console.error(e); toast('Error: ' + e.message); }
   };

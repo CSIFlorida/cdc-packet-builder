@@ -38,14 +38,14 @@
   <img src="icons/icon-192.png" alt="CSI Florida logo" width="44" height="44" class="hdr-logo">
   <div>
     <h1>CSI Florida - CDC Application App</h1>
-    <div class="sub">CDC+ applications, employee packets and vendor packets — answer once, get every form filled in and ready to sign.</div>
+    <div class="sub">CDC+ applications, purchasing plans, employee and vendor packets — answer once, get every form filled in and ready to sign.</div>
   </div>
   <div class="hdr-btns"><button class="sm ghost hide" id="btnInstall">Install app</button></div>
 </header>
 
 <main class="home-wrap">
   <h2 class="home-q">What would you like to complete?</h2>
-  <div class="tiles three">
+  <div class="tiles four">
     <a class="tile t-app" href="application.html">
       <span class="tile-ico" aria-hidden="true">📝</span>
       <span class="tile-t">CDC+ Participant Application</span>
@@ -53,6 +53,14 @@
       <span class="tile-f">Application · Participant/Consultant Agreement · Representative Agreement · Emergency Back-up Plan · Training Affirmation · F/EA Consent · IRS 2678 · IRS 8821 · Program Consent · Direct Deposit</span>
       <span class="tile-go">Start application →</span>
       <span class="tile-n" id="nApp"></span>
+    </a>
+    <a class="tile t-pp" href="purchasing.html">
+      <span class="tile-ico" aria-hidden="true">📊</span>
+      <span class="tile-t">CDC+ Purchasing Plan</span>
+      <span class="tile-d">After approval: how the monthly budget will be spent. Fills APD's Purchasing Plan Excel workbook.</span>
+      <span class="tile-f">Needs · Services with emergency backups · Supplies · Cash · Savings · OTE/STE · Budget summary</span>
+      <span class="tile-go">Start purchasing plan →</span>
+      <span class="tile-n" id="nPP"></span>
     </a>
     <a class="tile t-emp" href="employee.html">
       <span class="tile-ico" aria-hidden="true">👤</span>
@@ -102,6 +110,8 @@
   const count = k => { try { return ((JSON.parse(localStorage.getItem(k)) || {}).records || []).filter(r => r.data && (r.data.e_first || r.data.e_last || r.data.v_name)).length; } catch (e) { return 0; } };
   const nE = count('cdcEmpPacketRecords.v1'), nV = count('cdcPacketRecords.v1');
   const nA = (()=>{ try { return ((JSON.parse(localStorage.getItem('cdcAppRecords.v1')) || {}).records || []).filter(r => r.data && (r.data.p_first || r.data.p_last)).length; } catch (e) { return 0; } })();
+  const nP = (()=>{ try { return ((JSON.parse(localStorage.getItem('cdcPPRecords.v1')) || {}).records || []).filter(r => r.data && (r.data.p_first || r.data.p_last)).length; } catch (e) { return 0; } })();
+  if (nP) document.getElementById('nPP').textContent = nP + ' saved plan' + (nP > 1 ? 's' : '');
   if (nA) document.getElementById('nApp').textContent = nA + ' saved application' + (nA > 1 ? 's' : '');
   if (nE) document.getElementById('nEmp').textContent = nE + ' saved employee' + (nE > 1 ? 's' : '');
   if (nV) document.getElementById('nVen').textContent = nV + ' saved provider' + (nV > 1 ? 's' : '');

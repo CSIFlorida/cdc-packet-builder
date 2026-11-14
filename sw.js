@@ -1,6 +1,6 @@
 /* Offline cache. Bump CACHE when you publish a new version so users get the update. */
-const CACHE = 'cdc-packet-v3.1.0';
-const FILES = ['./', './index.html', './vendor.html', './employee.html', './application.html', './app.css', './version.js', './core.js',
+const CACHE = 'cdc-packet-v3.2.0';
+const FILES = ['./', './index.html', './vendor.html', './employee.html', './application.html', './purchasing.html', './purchasing.js', './fill-purchasing.js', './lib/exceljs.min.js', './forms/tpl-purchasing.js', './app.css', './version.js', './core.js',
   './vendor.js', './employee.js', './application.js', './fill.js', './fill-employee.js', './fill-application.js', './lib/pdf-lib.min.js',
   './forms/tpl-common.js', './forms/tpl-vendor.js', './forms/tpl-employee.js', './forms/tpl-application.js',
   './manifest.webmanifest', './browserconfig.xml', './favicon.ico', './icons/icon-16.png', './icons/icon-32.png',

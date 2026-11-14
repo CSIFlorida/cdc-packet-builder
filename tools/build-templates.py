@@ -7,6 +7,7 @@ bundles = {
     'common': {'gm': 'good_moral.pdf', 'dd': 'direct_deposit.pdf'},
     'vendor': {'vendor': 'ic_vendor.pdf', 'w9': 'w9_worker.pdf'},
     'employee': {'eif': 'employee_info.pdf', 'w4': 'w4.pdf', 'i9': 'i9.pdf', 'chg': 'change_name_address.pdf'},
+    'purchasing': {'pp': 'purchasing_plan_3.0-C.xlsx'},
     'application': {'apppkt': 'application_packet.pdf', 'enroll': 'enrollment_forms.pdf', 'training': 'training_affirmation.pdf'},
 }
 for name, files in bundles.items():
