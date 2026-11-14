@@ -10,6 +10,12 @@ A free web app that lets CDC+ participants and representatives complete CDC+ pap
 
 The consultant-interview pages of the Application Packet are intentionally left out, because they are not submitted to CDC+.
 
+**Consumer Database** (`consumers.html`): one profile per consumer, kept only in the browser on this device.
+- Holds identity, address, guardian, CDC+ Representative, consultant, APD area and FFI, monthly budget, Support Plan and Cost Plan dates, approved Cost Plan services and the latest monthly statement.
+- Attached documents (Budget Calculation Worksheet, Cost Plan, statements, etc.) are kept with the profile in IndexedDB.
+- Every section's "Fill from the Consumer Database" list, and the profile's "Use this profile" buttons, fill that section from the profile.
+- Export backup / Import cover the profiles, all packets and the documents. The backup file contains private data, so store it securely.
+
 **CDC+ Purchasing Plan** (`purchasing.html`), written once the participant is approved and has a Budget Authorization Form:
 - Fills APD's own Purchasing Plan workbook (Version 3.0-C, `forms/originals/purchasing_plan_3.0-C.xlsx`) and keeps every formula, drop-down and print setting.
 - Covers Page 1 basics and reason for submitting, B. Needs, C.1 Services with emergency backups, C.2 Supplies, D. Cash, E. Savings, F. OTE/STE and the Page 6 budget summary.
@@ -80,6 +86,9 @@ HTTPS is required for the "Install app" button and for offline use. All three op
 | `lib/exceljs.min.js` | Excel library (ExcelJS 4.4.0, MIT license) |
 | `fill-application.js` | Application & Enrollment packet field mapping (text placed by position on the flat IRS and scanned APD pages) |
 | `forms/tpl-*.js` | Blank forms embedded per packet, so each page loads only its own forms |
+| `consumers.html`, `consumers.js` | Consumer Database |
+| `docs.js` | Document store (IndexedDB) for attached PDFs and images |
+| `grid.js` | Editable line tables (Purchasing Plan, Cost Plan services) |
 | `core.js` | Shared engine: saved records, attachments, downloads, privacy |
 | `app.css` | Look of all pages |
 | `fill.js` | Vendor packet field mapping, plus the shared Good Moral and Direct Deposit fillers |

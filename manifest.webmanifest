@@ -90,6 +90,18 @@
   "id": "./index.html",
   "shortcuts": [
     {
+      "name": "Consumer Database",
+      "short_name": "Consumers",
+      "url": "./consumers.html",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "CDC+ Participant Application",
       "short_name": "Application",
       "url": "./application.html",

@@ -1,7 +1,8 @@
 /* Shared engine for every packet page (records, validation display, attachments, PDF download, help, privacy). */
 window.PacketApp = function (cfg) {
   const VERSION = window.APP_VERSION;
-  const ALL_KEYS = ['cdcPacketRecords.v1', 'cdcEmpPacketRecords.v1', 'cdcAppRecords.v1', 'cdcPPRecords.v1']; // vendor/IC, employee, application, purchasing plan stores
+  const DB_KEY = 'cdcConsumers.v1';
+  const ALL_KEYS = [DB_KEY, 'cdcPacketRecords.v1', 'cdcEmpPacketRecords.v1', 'cdcAppRecords.v1', 'cdcPPRecords.v1']; // consumer database + every packet's saved records
   const PARTICIPANT_FIELDS = ['p_first', 'p_mi', 'p_last', 'p_id', 'p_dob', 'p_street', 'p_city', 'p_state', 'p_zip', 'rep_name', 'p_ein', 'has_rep', 'r_first', 'r_mi', 'r_last', 'r_phone', 'r_cell', 'r_email', 'p_phone'];
   const KEY = cfg.KEY;
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -54,27 +55,40 @@ window.PacketApp = function (cfg) {
     el.querySelectorAll('.rec').forEach(x => x.onclick = () => { store.current = x.dataset.id; persist(); writeForm(cur().data); renderRecs(); });
   }
 
-  /* Saved participants from BOTH packets, so the consumer's details are typed once */
+  /* Consumers from the Consumer Database first, then participants typed in other packets */
   function participants() {
-    const seen = new Map();
+    const seen = new Map(), list = [];
     ALL_KEYS.forEach(k => { try { (JSON.parse(localStorage.getItem(k)) || { records: [] }).records.forEach(r => {
       const d = r.data || {}; if (!d.p_first && !d.p_last) return;
-      const id = `${(d.p_first || '').trim()}|${(d.p_last || '').trim()}|${(d.p_id || '').trim()}`.toLowerCase();
-      if (!seen.has(id)) seen.set(id, d);
+      if (k === KEY && r.id === store.current) return;
+      const id = `${(d.p_first || '').trim()}|${(d.p_last || '').trim()}`.toLowerCase();
+      if (seen.has(id)) return; seen.set(id, 1); list.push({ d, db: k === DB_KEY });
     }); } catch (e) {} });
-    return [...seen.values()];
+    return list;
+  }
+  function applyConsumer(d, db) {
+    const now = readForm();
+    if (db) {
+      // same field names mean the same thing in every section: copy everything the consumer profile has
+      Object.keys(now).forEach(k => { if (k.startsWith('tbl_')) return; if (k in d && d[k] !== '' && d[k] != null) now[k] = d[k]; });
+      if (cfg.fromConsumer) Object.assign(now, cfg.fromConsumer(d, now));
+    } else PARTICIPANT_FIELDS.forEach(k => { if (k in now && d[k] != null) now[k] = d[k]; });
+    writeForm(now);
   }
   function renderPicker() {
     const sel = $('#pPick'); if (!sel) return;
-    const list = participants();
-    sel.innerHTML = '<option value="">— Fill from a saved participant —</option>' + list.map((d, i) => `<option value="${i}">${esc([d.p_first, d.p_last].filter(Boolean).join(' '))}${d.p_id ? ' · CDC+ ' + esc(d.p_id) : ''}</option>`).join('');
+    const list = participants(), dbn = list.filter(x => x.db).length;
+    sel.innerHTML = '<option value="">— Fill from the Consumer Database or a saved participant —</option>' +
+      (dbn ? '<optgroup label="Consumer Database">' + list.map((x, i) => x.db ? `<option value="${i}">📇 ${esc([x.d.p_first, x.d.p_last].filter(Boolean).join(' '))}${x.d.p_id ? ' · CDC+ ' + esc(x.d.p_id) : ''}</option>` : '').join('') + '</optgroup>' : '') +
+      (list.length > dbn ? '<optgroup label="Typed in other sections">' + list.map((x, i) => !x.db ? `<option value="${i}">${esc([x.d.p_first, x.d.p_last].filter(Boolean).join(' '))}${x.d.p_id ? ' · CDC+ ' + esc(x.d.p_id) : ''}</option>` : '').join('') + '</optgroup>' : '');
     sel.closest('.pick').classList.toggle('hide', !list.length);
     sel.onchange = () => {
-      const d = list[+sel.value]; if (!d) return;
-      const now = readForm(); PARTICIPANT_FIELDS.forEach(k => { if (k in now && d[k] != null) now[k] = d[k]; });
-      writeForm(now); sel.value = ''; toast('Participant details filled in');
+      const x = list[+sel.value]; if (!x) return;
+      applyConsumer(x.d, x.db); sel.value = '';
+      toast(x.db ? 'Filled from the Consumer Database' : 'Participant details filled in');
     };
   }
+  window.CDCApp = { participants, applyConsumer, currentId: () => store.current, refresh: () => refresh() };
 
   function refresh() {
     const d = readForm();
@@ -140,7 +154,7 @@ window.PacketApp = function (cfg) {
     } catch (e) { console.error(e); toast('Error: ' + e.message); }
   }
   if ($('#btnEach')) $('#btnEach').onclick = async () => { const ks = $$('#docList input:checked').map(x => x.value); if (!ks.length) return toast('Select at least one document'); for (const k of ks) { await genOne(k); await new Promise(r => setTimeout(r, 350)); } };
-  $('#btnPacket').onclick = async () => {
+  if ($('#btnPacket')) $('#btnPacket').onclick = async () => {
     try {
       const ks = $$('#docList input:checked').map(x => x.value); if (!ks.length) return toast('Select at least one document');
       confirmIssues(); const d = readForm();
@@ -154,13 +168,16 @@ window.PacketApp = function (cfg) {
   $('#btnDel').onclick = () => {
     const b = $('#btnDel'), r = cur(); if (!r) return;
     if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Confirm delete'; setTimeout(() => { delete b.dataset.arm; b.textContent = 'Delete'; }, 3000); return; }
+    cfg.onDelete && cfg.onDelete(r);
     store.records = store.records.filter(x => x !== r); delete b.dataset.arm; b.textContent = 'Delete';
     if (!store.records.length) newRecord(); else { store.current = store.records[0].id; persist(); writeForm(cur().data); renderRecs(); }
   };
-  $('#btnExport').onclick = () => {
+  $('#btnExport').onclick = async () => {
     const all = {}; ALL_KEYS.forEach(k => { try { all[k] = JSON.parse(localStorage.getItem(k)); } catch (e) {} });
-    const url = URL.createObjectURL(new Blob([JSON.stringify({ app: 'cdc-packet-builder', version: VERSION, stores: all }, null, 2)], { type: 'application/json' }));
-    const a = document.createElement('a'); a.href = url; a.download = `cdc-packet-backup-${today()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 30000);
+    const docs = window.CDCDocs ? await CDCDocs.exportAll() : [];
+    const url = URL.createObjectURL(new Blob([JSON.stringify({ app: 'cdc-packet-builder', version: VERSION, stores: all, documents: docs }, null, 1)], { type: 'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = `cdc-backup-${today()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 30000);
+    toast(`Backup saved${docs.length ? ` (with ${docs.length} document${docs.length > 1 ? 's' : ''})` : ''} — keep it somewhere safe, it contains private data`);
   };
   $('#imp').onchange = async e => {
     const f = e.target.files[0]; if (!f) return;
@@ -176,7 +193,8 @@ window.PacketApp = function (cfg) {
         if (k === KEY) store = tgt; else try { localStorage.setItem(k, JSON.stringify(tgt)); } catch (x) {}
       });
       if (!cur() && store.records[0]) store.current = store.records[0].id;
-      persist(); if (cur()) writeForm(cur().data); renderRecs(); renderPicker(); toast(`Imported ${n} record(s)`);
+      if (s.documents && window.CDCDocs) n += await CDCDocs.importAll(s.documents);
+      persist(); if (cur()) writeForm(cur().data); renderRecs(); renderPicker(); cfg.onImport && cfg.onImport(); toast(`Imported ${n} item(s)`);
     } catch (err) { toast('Could not read that file'); }
     e.target.value = '';
   };
@@ -191,9 +209,10 @@ window.PacketApp = function (cfg) {
     const b = $('#btnWipe');
     if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Tap again to erase everything'; setTimeout(() => { delete b.dataset.arm; b.textContent = 'Erase all data on this device'; }, 4000); return; }
     try { ALL_KEYS.forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    if (window.CDCDocs) CDCDocs.wipe();
     store = { records: [], current: null }; att = {};
     $$('input[type=file][data-att]').forEach(el => { el.value = ''; $('#' + el.id + '_n').textContent = ''; });
-    delete b.dataset.arm; b.textContent = 'Erase all data on this device'; newRecord(); renderPicker(); toast('All saved data (both packets) erased from this device');
+    delete b.dataset.arm; b.textContent = 'Erase all data on this device'; newRecord(); renderPicker(); toast('All saved data (consumers, documents and every packet) erased from this device');
   };
   let deferred = null;
   window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; $('#btnInstall').classList.remove('hide'); });
@@ -204,4 +223,13 @@ window.PacketApp = function (cfg) {
   load();
   if (!store.records.length) newRecord(); else { if (!cur()) store.current = store.records[0].id; writeForm(cur().data); renderRecs(); }
   renderPicker();
+  // Opened from the Consumer Database's "Use this profile" button: start a new record filled from that consumer
+  try {
+    const cid = sessionStorage.getItem('cdcUseConsumer');
+    if (cid && KEY !== DB_KEY) {
+      sessionStorage.removeItem('cdcUseConsumer');
+      const c = ((JSON.parse(localStorage.getItem(DB_KEY)) || { records: [] }).records || []).find(r => r.id === cid);
+      if (c) { help.classList.add('hide'); newRecord(); applyConsumer(c.data, true); toast(`Filled from the Consumer Database: ${[c.data.p_first, c.data.p_last].filter(Boolean).join(' ')}`); }
+    }
+  } catch (e) {}
 };

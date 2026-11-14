@@ -44,6 +44,11 @@
 </header>
 
 <main class="home-wrap">
+  <a class="dbbar" href="consumers.html">
+    <span class="ico" aria-hidden="true">📇</span>
+    <span><b>Consumer Database</b><span class="file" id="nDB">Keep each consumer's information and documents in one place — every section below can fill itself from it.</span></span>
+    <span class="go">Open database →</span>
+  </a>
   <h2 class="home-q">What would you like to complete?</h2>
   <div class="tiles four">
     <a class="tile t-app" href="application.html">
@@ -110,6 +115,8 @@
   const count = k => { try { return ((JSON.parse(localStorage.getItem(k)) || {}).records || []).filter(r => r.data && (r.data.e_first || r.data.e_last || r.data.v_name)).length; } catch (e) { return 0; } };
   const nE = count('cdcEmpPacketRecords.v1'), nV = count('cdcPacketRecords.v1');
   const nA = (()=>{ try { return ((JSON.parse(localStorage.getItem('cdcAppRecords.v1')) || {}).records || []).filter(r => r.data && (r.data.p_first || r.data.p_last)).length; } catch (e) { return 0; } })();
+  const nDB = (()=>{ try { return ((JSON.parse(localStorage.getItem('cdcConsumers.v1')) || {}).records || []).filter(r => r.data && (r.data.p_first || r.data.p_last)).length; } catch (e) { return 0; } })();
+  if (nDB) document.getElementById('nDB').textContent = nDB + ' consumer' + (nDB > 1 ? 's' : '') + ' saved — every section below can fill itself from a profile.';
   const nP = (()=>{ try { return ((JSON.parse(localStorage.getItem('cdcPPRecords.v1')) || {}).records || []).filter(r => r.data && (r.data.p_first || r.data.p_last)).length; } catch (e) { return 0; } })();
   if (nP) document.getElementById('nPP').textContent = nP + ' saved plan' + (nP > 1 ? 's' : '');
   if (nA) document.getElementById('nApp').textContent = nA + ' saved application' + (nA > 1 ? 's' : '');

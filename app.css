@@ -145,3 +145,13 @@
   @media(max-width:700px){.tiles.four{grid-template-columns:1fr}}
   table.lines td.ix{white-space:nowrap;width:34px}
   table.lines{min-width:1100px}
+  body.db header{background:#1d4e45}
+  body.db .card h2 .n{background:#2a7d6b}
+  body.db button.pri{background:#2a7d6b;border-color:#2a7d6b}
+  body.db .seg label:has(input:checked){background:#2a7d6b;border-color:#2a7d6b}
+  .uselinks{display:flex;flex-direction:column;gap:7px;margin:6px 0 10px}.uselinks button{text-align:left}
+  .dbbar{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-left:6px solid #2a7d6b;border-radius:12px;padding:16px 20px;margin-bottom:18px;text-decoration:none;color:inherit}
+  .dbbar:hover{box-shadow:0 6px 20px rgba(20,41,77,.12)}
+  .dbbar .ico{font-size:34px}.dbbar b{font-size:17px;display:block}.dbbar .go{margin-left:auto;font-weight:600;color:#2a7d6b;white-space:nowrap}
+  input[type=month],input[type=search],input[type=number]{width:100%;padding:7px 9px;border:1px solid #c5ccd8;border-radius:6px;font:inherit;background:#fff}
+  #g_cps table.lines,#g_needs table.lines{min-width:760px}
